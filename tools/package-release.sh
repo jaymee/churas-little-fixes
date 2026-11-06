@@ -15,9 +15,10 @@ stage=$(mktemp -d)
 trap 'find "$stage" -depth -delete' EXIT
 mkdir -p dist "$stage/$module_id"
 jq --arg url "$repository_url" \
+  --arg readme "$repository_url/blob/$RELEASE_TAG/README.md" \
   --arg manifest "$repository_url/releases/latest/download/module.json" \
   --arg download "$repository_url/releases/download/$RELEASE_TAG/$archive" \
-  '. + {url: $url, manifest: $manifest, download: $download}' module.json > "$stage/$module_id/module.json"
+  '. + {url: $url, readme: $readme, manifest: $manifest, download: $download}' module.json > "$stage/$module_id/module.json"
 cp "$stage/$module_id/module.json" dist/module.json
 for directory in scripts styles lang; do
   if [[ -d "$directory" ]]; then
