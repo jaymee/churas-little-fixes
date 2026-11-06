@@ -4,7 +4,7 @@ Small quality-of-life fixes for Foundry VTT 13. Works without a specific game sy
 
 ## Fixes
 
-- **Hide Scene Padding Border** removes the black line between the scene and its padding. The GM can enable it under **Configure Settings → Module Settings → Chura's Little Fixes**. It is off by default.
+- **Hide Scene Padding Border** hides the black outlines around the scene and canvas. The GM can enable it under **Configure Settings → Module Settings → Chura's Little Fixes**. It is off by default. Saving a change reloads connected clients.
 
 ## Install
 

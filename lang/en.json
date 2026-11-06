@@ -2,7 +2,7 @@
   "CHURAS_LITTLE_FIXES": {
     "HideScenePaddingBorder": {
       "Name": "Hide Scene Padding Border",
-      "Hint": "Hide the black line between the scene and its padding for everyone in this world."
+      "Hint": "Hide the black scene and canvas outlines for everyone in this world. Saving a change reloads connected clients."
     }
   }
 }
