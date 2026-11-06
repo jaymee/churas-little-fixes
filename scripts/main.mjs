@@ -1,9 +1,11 @@
+import { registerFavicon } from "./favicon.mjs";
 import { registerStatusIconSizing } from "./status-icons.mjs";
 
 const MODULE_ID = "churas-little-fixes";
 const HIDE_BORDER = "hideScenePaddingBorder";
 
 Hooks.once("init", () => {
+  registerFavicon(MODULE_ID);
   registerStatusIconSizing(MODULE_ID);
   game.settings.register(MODULE_ID, HIDE_BORDER, {
     name: "CHURAS_LITTLE_FIXES.HideScenePaddingBorder.Name",
