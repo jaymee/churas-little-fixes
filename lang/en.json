@@ -3,6 +3,10 @@
     "HideScenePaddingBorder": {
       "Name": "Hide Scene Padding Border",
       "Hint": "Hide the black scene and canvas outlines for everyone in this world. Saving a change reloads connected clients."
+    },
+    "StatusIconHeight": {
+      "Name": "Status Icon Height (%)",
+      "Hint": "Set each status icon's height as a percentage of its displayed token artwork. Try 4% for a modest increase, or 0% for Foundry's default sizing."
     }
   }
 }
