@@ -19,6 +19,10 @@
     "TopAlignChatPortraits": {
       "Name": "Top-Align Chat Portraits",
       "Hint": "Show the upper part of tall artwork in Character Chat Selector's sender portraits. Each player still chooses whether to show portraits."
+    },
+    "CompactChatPortraits": {
+      "Name": "Compact Chat Portraits",
+      "Hint": "Place the sender name beside the portrait in Character Chat Selector messages."
     }
   }
 }

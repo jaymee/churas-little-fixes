@@ -1,3 +1,11 @@
 .churas-top-align-chat-portraits .chat-message .message-header .chat-portrait-container > img.chat-portrait {
   object-position: center top;
 }
+
+.churas-compact-chat-portraits .chat-message .message-header .message-sender:has(> .chat-portrait-container) {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

@@ -4,6 +4,7 @@ import { registerStatusIconSizing } from "./status-icons.mjs";
 const MODULE_ID = "churas-little-fixes";
 const HIDE_BORDER = "hideScenePaddingBorder";
 const TOP_ALIGN_CHAT_PORTRAITS = "topAlignChatPortraits";
+const COMPACT_CHAT_PORTRAITS = "compactChatPortraits";
 
 Hooks.once("init", () => {
   registerBrowserTab(MODULE_ID);
@@ -17,8 +18,18 @@ Hooks.once("init", () => {
     default: false,
     onChange: setChatPortraitAlignment,
   });
+  game.settings.register(MODULE_ID, COMPACT_CHAT_PORTRAITS, {
+    name: "CHURAS_LITTLE_FIXES.CompactChatPortraits.Name",
+    hint: "CHURAS_LITTLE_FIXES.CompactChatPortraits.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    onChange: setCompactChatPortraits,
+  });
   Hooks.once("ready", () => {
     setChatPortraitAlignment(game.settings.get(MODULE_ID, TOP_ALIGN_CHAT_PORTRAITS));
+    setCompactChatPortraits(game.settings.get(MODULE_ID, COMPACT_CHAT_PORTRAITS));
   });
   game.settings.register(MODULE_ID, HIDE_BORDER, {
     name: "CHURAS_LITTLE_FIXES.HideScenePaddingBorder.Name",
@@ -35,6 +46,10 @@ Hooks.once("init", () => {
 
 function setChatPortraitAlignment(enabled) {
   document.documentElement.classList.toggle("churas-top-align-chat-portraits", enabled);
+}
+
+function setCompactChatPortraits(enabled) {
+  document.documentElement.classList.toggle("churas-compact-chat-portraits", enabled);
 }
 
 function hideSceneOutline(view) {
