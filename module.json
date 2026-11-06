@@ -1,0 +1,25 @@
+{
+  "id": "churas-little-fixes",
+  "title": "Chura's Little Fixes",
+  "description": "Small quality-of-life fixes for Foundry Virtual Tabletop.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "13",
+    "maximum": "13"
+  },
+  "authors": [
+    {
+      "name": "Chura"
+    }
+  ],
+  "esmodules": [
+    "scripts/main.mjs"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ]
+}
