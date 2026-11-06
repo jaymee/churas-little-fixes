@@ -15,6 +15,10 @@
     "BrowserTitle": {
       "Name": "Browser Tab Title",
       "Hint": "Set the browser tab title after signing in. Leave blank to use Foundry's usual title."
+    },
+    "TopAlignChatPortraits": {
+      "Name": "Top-Align Chat Portraits",
+      "Hint": "Show the upper part of tall artwork in Character Chat Selector's sender portraits. Each player still chooses whether to show portraits."
     }
   }
 }

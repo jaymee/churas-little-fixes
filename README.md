@@ -8,6 +8,7 @@ Small quality-of-life fixes for Foundry VTT 13. Works without a specific game sy
 - **Status Icon Height (%)** sizes regular status icons as a percentage of each token's displayed artwork height. Set it under the same module settings. Try 4% to start, or use 0% for Foundry's default sizing.
 - **Browser Favicon** uses an image of your choice for the browser tab after signing in. Choose an image in the module settings, or leave the field blank for Foundry's usual icon.
 - **Browser Tab Title** sets the tab title after signing in. Leave it blank to use Foundry's usual title.
+- **Top-Align Chat Portraits** shows the upper part of tall artwork in Character Chat Selector's sender portraits. Enable it in the module settings. Each player can still choose whether to show portraits.
 
 ## Install
 
