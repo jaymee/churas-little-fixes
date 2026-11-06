@@ -1,6 +1,7 @@
 const BROWSER_FAVICON = "browserFavicon";
+const BROWSER_TITLE = "browserTitle";
 
-export function registerFavicon(moduleId) {
+export function registerBrowserTab(moduleId) {
   game.settings.register(moduleId, BROWSER_FAVICON, {
     name: "CHURAS_LITTLE_FIXES.BrowserFavicon.Name",
     hint: "CHURAS_LITTLE_FIXES.BrowserFavicon.Hint",
@@ -11,7 +12,33 @@ export function registerFavicon(moduleId) {
     onChange: applyFavicon,
   });
 
-  Hooks.once("ready", () => applyFavicon(game.settings.get(moduleId, BROWSER_FAVICON)));
+  game.settings.register(moduleId, BROWSER_TITLE, {
+    name: "CHURAS_LITTLE_FIXES.BrowserTitle.Name",
+    hint: "CHURAS_LITTLE_FIXES.BrowserTitle.Hint",
+    scope: "world",
+    config: true,
+    type: String,
+    default: "",
+    onChange: applyTitle,
+  });
+
+  Hooks.once("ready", () => {
+    applyFavicon(game.settings.get(moduleId, BROWSER_FAVICON));
+    applyTitle(game.settings.get(moduleId, BROWSER_TITLE));
+  });
+}
+
+let originalTitle;
+
+function applyTitle(value) {
+  const title = value.trim();
+  if (title) {
+    originalTitle ??= document.title;
+    document.title = title;
+  } else if (originalTitle !== undefined) {
+    document.title = originalTitle;
+    originalTitle = undefined;
+  }
 }
 
 let customIcon;

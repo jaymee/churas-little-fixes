@@ -11,6 +11,10 @@
     "BrowserFavicon": {
       "Name": "Browser Favicon",
       "Hint": "Choose an image for the browser tab after signing in. Leave blank to use Foundry's usual icon."
+    },
+    "BrowserTitle": {
+      "Name": "Browser Tab Title",
+      "Hint": "Set the browser tab title after signing in. Leave blank to use Foundry's usual title."
     }
   }
 }
