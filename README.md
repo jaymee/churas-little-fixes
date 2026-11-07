@@ -4,13 +4,29 @@ Small quality-of-life fixes for Foundry VTT 13.
 
 ## Fixes
 
-- **Hide Scene Padding Border** hides the black outlines around the scene and canvas. The GM can enable it under **Configure Settings → Module Settings → Chura's Little Fixes**. It is off by default. Saving a change reloads connected clients.
-- **Status Icon Height (%)** sizes regular status icons as a percentage of each token's displayed artwork height. Try 4% to start, or use 0% for Foundry's default sizing. **Minimum Status Icon Size (px)** keeps proportionally sized icons at or above 16 canvas pixels by default.
-- **Browser Favicon** uses an image of your choice for the browser tab after signing in. Choose an image in the module settings, or leave the field blank for Foundry's usual icon.
+Find these options under **Configure Settings → Module Settings → Chura's Little Fixes**.
+
+### Browser Tab
+
+- **Browser Favicon** uses an image of your choice for the browser tab after signing in. Leave it blank to use Foundry's usual icon.
 - **Browser Tab Title** sets the tab title after signing in. Leave it blank to use Foundry's usual title.
-- **Top-Align Chat Portraits** shows the upper part of tall artwork in Character Chat Selector's sender portraits. Enable it in the module settings. Each player can still choose whether to show portraits.
+
+### Chat Portraits
+
+- **Top-Align Chat Portraits** shows the upper part of tall artwork in Character Chat Selector's sender portraits. Each player can still choose whether to show portraits.
 - **Compact Chat Portraits** puts the sender name beside the portrait in Character Chat Selector messages.
-- **HP & MP Panel** opens automatically when you select a Project FU token you can edit and closes when you clear the selection. Drag the token name to move it. HP has damage, healing, defeat, and full heal controls. MP has decrease and increase controls. Toggle **Show HP & MP Panel on Token Selection** in the module settings. Inspired by [Always HP](https://foundryvtt.com/packages/always-hp).
+
+### Canvas and Tokens
+
+- **Hide Scene Padding Border** hides the black outlines around the scene and canvas. It is off by default. Saving a change reloads connected clients.
+- **Status Icon Height (%)** sizes regular status icons as a percentage of each token's displayed artwork height. Try 4% to start, or use 0% for Foundry's default sizing.
+- **Minimum Status Icon Size (px)** keeps proportionally sized icons at or above 16 canvas pixels by default.
+
+### HP & MP Panel
+
+The panel opens when you select a Project FU token you can edit. Drag the token name to move it. HP has damage, healing, defeat, and full heal controls. MP has decrease and increase controls.
+
+Use **Show HP & MP Panel on Token Selection** to control whether it opens in your browser. Inspired by [Always HP](https://foundryvtt.com/packages/always-hp).
 
 ## Install
 
