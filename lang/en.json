@@ -30,7 +30,7 @@
       "Hint": "Place the sender name beside the portrait in Character Chat Selector messages."
     },
     "ResourcePanel": {
-      "Title": "HP & MP Panel",
+      "Drag": "Drag to move the HP & MP panel",
       "Show": {
         "Name": "Show HP & MP Panel on Token Selection",
         "Hint": "Automatically show the Project FU resource panel when you select a token you can edit."

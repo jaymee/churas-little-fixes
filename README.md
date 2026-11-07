@@ -10,7 +10,7 @@ Small quality-of-life fixes for Foundry VTT 13.
 - **Browser Tab Title** sets the tab title after signing in. Leave it blank to use Foundry's usual title.
 - **Top-Align Chat Portraits** shows the upper part of tall artwork in Character Chat Selector's sender portraits. Enable it in the module settings. Each player can still choose whether to show portraits.
 - **Compact Chat Portraits** puts the sender name beside the portrait in Character Chat Selector messages.
-- **HP & MP Panel** opens automatically when you select a Project FU token you can edit and closes when you clear the selection. HP has damage, healing, defeat, and full heal controls. MP has decrease and increase controls. Toggle **Show HP & MP Panel on Token Selection** in the module settings. Inspired by [Always HP](https://foundryvtt.com/packages/always-hp).
+- **HP & MP Panel** opens automatically when you select a Project FU token you can edit and closes when you clear the selection. Drag the token name to move it. HP has damage, healing, defeat, and full heal controls. MP has decrease and increase controls. Toggle **Show HP & MP Panel on Token Selection** in the module settings. Inspired by [Always HP](https://foundryvtt.com/packages/always-hp).
 
 ## Install
 

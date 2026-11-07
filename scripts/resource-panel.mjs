@@ -10,8 +10,9 @@ export function registerResourcePanel(moduleId) {
   class ResourcePanel extends HandlebarsApplicationMixin(ApplicationV2) {
     static DEFAULT_OPTIONS = {
       id: "churas-resource-panel",
-      window: { title: `${TEXT}.Title`, icon: "fa-solid fa-heart-pulse", minimizable: true },
-      position: { width: 400 },
+      classes: ["application"],
+      window: { frame: false, positioned: true },
+      position: { width: 320 },
       actions: {
         decrease: ResourcePanel.adjust,
         increase: ResourcePanel.adjust,
@@ -26,6 +27,7 @@ export function registerResourcePanel(moduleId) {
 
     _onRender(context, options) {
       super._onRender(context, options);
+      this.#enableDragging();
       this.element.querySelectorAll("[data-resource] input").forEach(input => {
         input.addEventListener("keydown", event => {
           if (event.key !== "Enter" || event.repeat) return;
@@ -46,6 +48,29 @@ export function registerResourcePanel(moduleId) {
       }
 
       this.refresh();
+    }
+
+    #enableDragging() {
+      const handle = this.element.querySelector("[data-drag-handle]");
+      let drag;
+
+      handle.addEventListener("pointerdown", event => {
+        if (event.button !== 0 || drag) return;
+        const { left, top } = this.position;
+        drag = { id: event.pointerId, left, top, x: event.clientX, y: event.clientY };
+        handle.setPointerCapture(event.pointerId);
+        event.preventDefault();
+      });
+      handle.addEventListener("pointermove", event => {
+        if (drag?.id !== event.pointerId) return;
+        this.setPosition({
+          left: drag.left + event.clientX - drag.x,
+          top: drag.top + event.clientY - drag.y,
+        });
+      });
+      handle.addEventListener("lostpointercapture", event => {
+        if (drag?.id === event.pointerId) drag = undefined;
+      });
     }
 
     refresh(targets = getTargets()) {
