@@ -9,7 +9,7 @@
   max-height: min(16rem, calc(100vh - 16px));
   padding: 0.75rem 2.1rem 0.75rem 0.85rem;
   overflow: auto;
-  background: var(--color-cool-5, #171720);
+  background: color-mix(in srgb, var(--color-cool-5, #171720) 75%, transparent);
   color: var(--color-light-1, #f5f5f5);
   border: 1px solid var(--color-cool-3, #4c495b);
   border-radius: 0.4rem;
