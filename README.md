@@ -1,6 +1,6 @@
 # Chura's Little Fixes
 
-Small quality-of-life fixes for Foundry VTT 13. Works without a specific game system.
+Small quality-of-life fixes for Foundry VTT 13.
 
 ## Fixes
 
@@ -10,6 +10,7 @@ Small quality-of-life fixes for Foundry VTT 13. Works without a specific game sy
 - **Browser Tab Title** sets the tab title after signing in. Leave it blank to use Foundry's usual title.
 - **Top-Align Chat Portraits** shows the upper part of tall artwork in Character Chat Selector's sender portraits. Enable it in the module settings. Each player can still choose whether to show portraits.
 - **Compact Chat Portraits** puts the sender name beside the portrait in Character Chat Selector messages.
+- **HP & MP Panel** gives Project FU a movable window for editing selected tokens. Open it from the token toolbar or enable **Open HP & MP Panel on Sign-In** in the module settings. HP has damage, healing, defeat, and full heal controls. MP has decrease and increase controls. Inspired by [Always HP](https://foundryvtt.com/packages/always-hp).
 
 ## Install
 

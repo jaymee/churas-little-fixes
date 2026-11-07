@@ -20,7 +20,7 @@ jq --arg url "$repository_url" \
   --arg download "$repository_url/releases/download/$RELEASE_TAG/$archive" \
   '. + {url: $url, readme: $readme, manifest: $manifest, download: $download}' module.json > "$stage/$module_id/module.json"
 cp "$stage/$module_id/module.json" dist/module.json
-for directory in scripts styles lang; do
+for directory in scripts styles lang templates; do
   if [[ -d "$directory" ]]; then
     cp -R "$directory" "$stage/$module_id/"
   fi

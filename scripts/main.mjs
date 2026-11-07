@@ -1,4 +1,5 @@
 import { registerBrowserTab } from "./browser-tab.mjs";
+import { registerResourcePanel } from "./resource-panel.mjs";
 import { groupSettings } from "./settings-sections.mjs";
 import { registerStatusIconSizing } from "./status-icons.mjs";
 
@@ -9,6 +10,7 @@ const COMPACT_CHAT_PORTRAITS = "compactChatPortraits";
 
 Hooks.once("init", () => {
   registerBrowserTab(MODULE_ID);
+  registerResourcePanel(MODULE_ID);
   registerStatusIconSizing(MODULE_ID);
   game.settings.register(MODULE_ID, TOP_ALIGN_CHAT_PORTRAITS, {
     name: "CHURAS_LITTLE_FIXES.TopAlignChatPortraits.Name",

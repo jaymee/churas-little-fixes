@@ -1,0 +1,35 @@
+<div class="churas-resource-panel">
+  <p class="churas-resource-target" data-target-label aria-live="polite"></p>
+  <div class="churas-resource-columns">
+    <section data-resource="hp">
+      <div class="churas-resource-label"><strong>HP</strong><output>—</output></div>
+      <div class="churas-resource-controls">
+        <button type="button" data-action="defeat" title="{{localize 'CHURAS_LITTLE_FIXES.ResourcePanel.Defeat'}}">
+          <i class="fa-solid fa-skull" aria-hidden="true"></i>
+        </button>
+        <button type="button" data-action="decrease" title="{{localize 'CHURAS_LITTLE_FIXES.ResourcePanel.DecreaseHP'}}">
+          <i class="fa-solid fa-minus" aria-hidden="true"></i>
+        </button>
+        <input type="text" inputmode="numeric" placeholder="1" aria-label="{{localize 'CHURAS_LITTLE_FIXES.ResourcePanel.HPAmount'}}">
+        <button type="button" data-action="increase" title="{{localize 'CHURAS_LITTLE_FIXES.ResourcePanel.IncreaseHP'}}">
+          <i class="fa-solid fa-plus" aria-hidden="true"></i>
+        </button>
+        <button type="button" data-action="heal" title="{{localize 'CHURAS_LITTLE_FIXES.ResourcePanel.Heal'}}">
+          <i class="fa-solid fa-heart" aria-hidden="true"></i>
+        </button>
+      </div>
+    </section>
+    <section data-resource="mp">
+      <div class="churas-resource-label"><strong>MP</strong><output>—</output></div>
+      <div class="churas-resource-controls">
+        <button type="button" data-action="decrease" title="{{localize 'CHURAS_LITTLE_FIXES.ResourcePanel.DecreaseMP'}}">
+          <i class="fa-solid fa-minus" aria-hidden="true"></i>
+        </button>
+        <input type="text" inputmode="numeric" placeholder="1" aria-label="{{localize 'CHURAS_LITTLE_FIXES.ResourcePanel.MPAmount'}}">
+        <button type="button" data-action="increase" title="{{localize 'CHURAS_LITTLE_FIXES.ResourcePanel.IncreaseMP'}}">
+          <i class="fa-solid fa-plus" aria-hidden="true"></i>
+        </button>
+      </div>
+    </section>
+  </div>
+</div>

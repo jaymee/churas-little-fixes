@@ -1,0 +1,38 @@
+.churas-resource-panel {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.churas-resource-target {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.churas-resource-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.churas-resource-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.25rem;
+}
+
+.churas-resource-controls {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.churas-resource-controls button {
+  flex: 0 0 1.75rem;
+  padding: 0;
+}
+
+.churas-resource-controls input {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}

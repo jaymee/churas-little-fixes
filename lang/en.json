@@ -28,6 +28,25 @@
     "CompactChatPortraits": {
       "Name": "Compact Chat Portraits",
       "Hint": "Place the sender name beside the portrait in Character Chat Selector messages."
+    },
+    "ResourcePanel": {
+      "Title": "HP & MP Panel",
+      "Show": {
+        "Name": "Open HP & MP Panel on Sign-In",
+        "Hint": "Open the Project FU resource panel when you sign in on this browser."
+      },
+      "Selected": "{count} tokens selected",
+      "NoTokens": "Select a token to adjust its resources.",
+      "InvalidAmount": "Enter a positive whole number or leave the amount blank to use 1.",
+      "UpdateFailed": "Could not update resources for {name}.",
+      "Defeat": "Set HP to zero. Shift-click to toggle defeated status. Right-click to change HP only.",
+      "Heal": "Restore full HP. Right-click to change HP only.",
+      "DecreaseHP": "Decrease HP",
+      "IncreaseHP": "Increase HP",
+      "DecreaseMP": "Decrease MP",
+      "IncreaseMP": "Increase MP",
+      "HPAmount": "HP adjustment amount",
+      "MPAmount": "MP adjustment amount"
     }
   }
 }
