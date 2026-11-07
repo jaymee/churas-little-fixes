@@ -102,6 +102,10 @@
       "intensity": "Glow Intensity (%)"
     },
     "QuestMarkers": {
+      "FontFamily": {
+        "Name": "Quest Popup Font Family",
+        "Hint": "Enter a font family available to your players. Leave blank to use the usual popup font."
+      },
       "Name": "Quest Marker",
       "Hint": "Hide the map label and open a popup from the linked text journal page on one click.",
       "Details": "Quest details",

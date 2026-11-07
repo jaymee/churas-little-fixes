@@ -1,4 +1,5 @@
 const QUEST_MARKER = "questMarker";
+export const QUEST_POPUP_FONT = "questPopupFontFamily";
 const TEXT = "CHURAS_LITTLE_FIXES.QuestMarkers";
 
 export function isQuestMarker(note, moduleId) {
@@ -9,6 +10,16 @@ export function registerQuestMarkers(moduleId) {
   let active;
   let press;
   const localize = key => game.i18n.localize(`${TEXT}.${key}`);
+
+  game.settings.register(moduleId, QUEST_POPUP_FONT, {
+    name: `${TEXT}.FontFamily.Name`,
+    hint: `${TEXT}.FontFamily.Hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    default: "",
+    onChange: applyPopupFont,
+  });
 
   Hooks.on("renderNoteConfig", (app, html) => {
     if (game.user.isGM) addQuestCheckbox(app, html, moduleId, localize);
@@ -93,6 +104,13 @@ export function registerQuestMarkers(moduleId) {
     element.append(close, body);
     document.body.append(element);
     active = { element, note, page };
+    applyPopupFont(game.settings.get(moduleId, QUEST_POPUP_FONT));
+  }
+
+  function applyPopupFont(fontFamily) {
+    if (!active) return;
+    active.element.style.removeProperty("font-family");
+    active.element.style.fontFamily = fontFamily.trim();
     positionPopup();
   }
 

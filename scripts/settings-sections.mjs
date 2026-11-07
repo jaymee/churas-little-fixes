@@ -1,10 +1,11 @@
 import { MAP_PIN_SETTINGS } from "./map-pins.mjs";
+import { QUEST_POPUP_FONT } from "./quest-markers.mjs";
 
 const SECTIONS = [
   { label: "BrowserTab", keys: ["browserFavicon", "browserTitle"] },
   { label: "ChatPortraits", keys: ["topAlignChatPortraits", "compactChatPortraits"] },
   { label: "Canvas", keys: ["hideScenePaddingBorder", "statusIconHeightPercent", "minimumStatusIconSize"] },
-  { label: "MapPins", keys: MAP_PIN_SETTINGS },
+  { label: "MapPins", keys: [...MAP_PIN_SETTINGS, QUEST_POPUP_FONT] },
 ];
 
 export function groupSettings(moduleId, html) {
