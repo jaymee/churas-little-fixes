@@ -1,18 +1,21 @@
 #churas-resource-panel {
   position: fixed;
   z-index: 99;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-cool-5, #171720) 75%, transparent);
 }
 
 .churas-resource-panel {
   display: grid;
   gap: 0.3rem;
-  padding: 0.5rem;
 }
 
 .churas-resource-target {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  padding: 0.35rem 0.5rem;
+  background: color-mix(in srgb, var(--churas-disposition, transparent) 45%, transparent);
   overflow-wrap: anywhere;
   cursor: grab;
   touch-action: none;
@@ -27,6 +30,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
   gap: 0.5rem;
+  padding: 0 0.5rem 0.5rem;
 }
 
 .churas-resource-label {

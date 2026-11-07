@@ -80,6 +80,14 @@ export function registerResourcePanel(moduleId) {
       targetLabel.textContent = targets.length === 1 ? targets[0].name : targets.length
         ? game.i18n.format(`${TEXT}.Selected`, { count: targets.length }) : localize("NoTokens");
 
+      const handle = targetLabel.closest("[data-drag-handle]");
+      const color = targets[0]?.getDispositionColor();
+      if (color !== undefined && targets.every(token => token.getDispositionColor() === color)) {
+        handle.style.setProperty("--churas-disposition", `#${color.toString(16).padStart(6, "0")}`);
+      } else {
+        handle.style.removeProperty("--churas-disposition");
+      }
+
       for (const section of this.element.querySelectorAll("[data-resource]")) {
         const pools = targets.map(token => getPool(token.actor, section.dataset.resource)).filter(Boolean);
         section.querySelector("output").textContent = pools.length === 1 && targets.length === 1
