@@ -106,7 +106,9 @@
       "Hint": "Hide the map label and open a popup from the linked text journal page on one click.",
       "Details": "Quest details",
       "Close": "Close quest details",
-      "Empty": "No quest details have been added."
+      "Empty": "No quest details have been added.",
+      "MissingPage": "Choose a Text journal page in this quest marker's Page field.",
+      "Unavailable": "Quest details are unavailable."
     }
   }
 }

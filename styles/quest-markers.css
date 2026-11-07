@@ -1,5 +1,6 @@
-.churas-quest-popup[popover] {
+.churas-quest-popup {
   position: fixed;
+  z-index: 1000;
   inset: auto;
   margin: 0;
   box-sizing: border-box;

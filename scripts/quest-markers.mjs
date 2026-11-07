@@ -27,30 +27,53 @@ export function registerQuestMarkers(moduleId) {
       if (active && [active.page.uuid, active.page.parent?.uuid].includes(document.uuid)) closePopup();
     });
   }
-  Hooks.on("canvasPan", closePopup);
+  Hooks.on("canvasPan", positionPopup);
   Hooks.on("canvasTearDown", closePopup);
+
+  document.addEventListener("pointerdown", event => {
+    if (active && !active.element.contains(event.target)) closePopup();
+  }, true);
+  document.addEventListener("keydown", event => {
+    if (!active || event.key !== "Escape") return;
+    event.stopPropagation();
+    closePopup();
+  }, true);
 
   Hooks.on("activateNote", note => {
     if (isQuestMarker(note, moduleId) && questPage(note)) return false;
   });
 
   function bindClick(note) {
-    if (note === active?.note && !questPage(note)) closePopup();
+    if (note === active?.note && !canSeePin(note)) closePopup();
     const icon = note.controlIcon;
     if (!icon || boundIcons.has(icon) || !isQuestMarker(note, moduleId)) return;
     boundIcons.add(icon);
-    icon.on("pointertap", event => {
-      if (event.button !== 0 || !isQuestMarker(note, moduleId)) return;
+    let press;
+    icon.on("pointerdowncapture", event => {
+      if (event.button !== 0) return;
+      press = { id: event.pointerId, x: event.global.x, y: event.global.y };
+    });
+    icon.on("pointerupcapture", event => {
+      if (press?.id !== event.pointerId) return;
+      const moved = Math.hypot(event.global.x - press.x, event.global.y - press.y);
+      press = undefined;
+      if (moved > 6 || note.mouseInteractionManager?.isDragging) return;
+      if (!isQuestMarker(note, moduleId) || !canSeePin(note)) return;
       const page = questPage(note);
       if (page) openPopup(note, page);
+      else ui.notifications.warn(localize(game.user.isGM ? "MissingPage" : "Unavailable"));
     });
+    const clearPress = event => {
+      if (press?.id === event.pointerId) press = undefined;
+    };
+    icon.on("pointerupoutside", clearPress);
+    icon.on("pointercancel", clearPress);
   }
 
   function openPopup(note, page) {
     closePopup();
     const element = document.createElement("aside");
     element.className = "churas-quest-popup";
-    element.popover = "auto";
     element.setAttribute("role", "dialog");
     element.setAttribute("aria-label", localize("Details"));
 
@@ -67,11 +90,16 @@ export function registerQuestMarkers(moduleId) {
     element.append(close, body);
     document.body.append(element);
     active = { element, note, page };
-    element.addEventListener("toggle", event => {
-      if (event.newState === "closed" && active?.element === element) closePopup();
-    });
+    positionPopup();
+  }
 
-    element.showPopover();
+  function positionPopup() {
+    if (!active) return;
+    const { element, note } = active;
+    if (!canSeePin(note)) {
+      closePopup();
+      return;
+    }
     const { width, height } = element.getBoundingClientRect();
     const { x, y } = canvas.clientCoordinatesFromCanvas({ x: note.document.x, y: note.document.y });
     const margin = 8;
@@ -113,9 +141,17 @@ function addQuestCheckbox(app, html, moduleId, localize) {
   labelField.after(row);
 }
 
+function canSeePin(note) {
+  return !note.isPreview && note.visible && note.worldVisible !== false && note.isVisible;
+}
+
 function questPage(note) {
-  if (note.isPreview || !note.visible || !note.worldVisible || !note.isVisible) return null;
-  const page = note.document.page;
+  const { pageId, entry } = note.document;
+  let page = note.document.page;
+  if (!page && !pageId) {
+    const textPages = entry?.pages.filter(candidate => candidate.type === "text") ?? [];
+    if (textPages.length === 1) [page] = textPages;
+  }
   return page?.type === "text" && page.testUserPermission(game.user, "OBSERVER") ? page : null;
 }
 
