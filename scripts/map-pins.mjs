@@ -1,3 +1,4 @@
+import { registerPinGlow } from "./pin-glow.mjs";
 import { isQuestMarker, registerQuestMarkers } from "./quest-markers.mjs";
 
 const TEXT = "CHURAS_LITTLE_FIXES.MapPins";
@@ -49,6 +50,7 @@ export function registerMapPins(moduleId) {
     if (document.object) applyAppearance(document.object);
   });
   registerQuestMarkers(moduleId);
+  registerPinGlow(moduleId);
 
   function refreshPins() {
     appearance = undefined;

@@ -94,6 +94,13 @@
         "Hint": "Leave blank to use Foundry's usual stroke color."
       }
     },
+    "PinGlow": {
+      "Title": "Pin Glow",
+      "enabled": "Enable Glow",
+      "color": "Glow Color",
+      "size": "Glow Size (% of Icon Size)",
+      "intensity": "Glow Intensity (%)"
+    },
     "QuestMarkers": {
       "Name": "Quest Marker",
       "Hint": "Hide the map label and open a popup from the linked text journal page on one click.",
