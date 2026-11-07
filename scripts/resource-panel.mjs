@@ -1,4 +1,4 @@
-const SHOW_PANEL = "showResourcePanel";
+const SHOW_PANEL = "showResourcePanelOnSelection";
 const TEXT = "CHURAS_LITTLE_FIXES.ResourcePanel";
 
 export function registerResourcePanel(moduleId) {
@@ -113,40 +113,49 @@ export function registerResourcePanel(moduleId) {
     scope: "client",
     config: true,
     type: Boolean,
-    default: false,
-    onChange: show => show ? panel.render({ force: true }) : panel.close(),
+    default: true,
+    onChange: scheduleSelectionRefresh,
   });
 
-  Hooks.on("getSceneControlButtons", controls => {
-    if (!controls.tokens) return;
-    controls.tokens.tools.churasResourcePanel = {
-      name: "churasResourcePanel",
-      title: `${TEXT}.Title`,
-      icon: "fa-solid fa-heart-pulse",
-      button: true,
-      onClick: () => panel.render({ force: true }),
-    };
-  });
+  let selectionTimer;
+  let panelTransition = Promise.resolve();
 
-  Hooks.once("ready", () => {
-    if (game.settings.get(moduleId, SHOW_PANEL)) panel.render({ force: true });
-  });
-  for (const hook of ["canvasReady", "controlToken", "createToken", "updateToken", "deleteToken", "updateActor"]) {
+  function syncPanel(tearingDown = false) {
+    panelTransition = panelTransition.then(async () => {
+      const targets = tearingDown ? [] : getTargets();
+      if (targets.length && game.settings.get(moduleId, SHOW_PANEL)) {
+        if (panel.rendered) panel.refresh(targets);
+        else await panel.render({ force: true });
+      } else if (panel.rendered) {
+        await panel.close({ animate: false });
+      }
+    }).catch(error => console.error("Chura's Little Fixes | Could not show or hide the resource panel", error));
+  }
+
+  function scheduleSelectionRefresh() {
+    window.clearTimeout(selectionTimer);
+    // Switching tokens can release the old one before controlling the new one.
+    selectionTimer = window.setTimeout(syncPanel, 0);
+  }
+
+  Hooks.once("ready", scheduleSelectionRefresh);
+  for (const hook of ["canvasReady", "controlToken", "deleteToken"]) {
+    Hooks.on(hook, scheduleSelectionRefresh);
+  }
+  for (const hook of ["updateToken", "updateActor"]) {
     Hooks.on(hook, () => panel.refresh());
   }
-  Hooks.on("canvasTearDown", () => panel.refresh([]));
+  Hooks.on("canvasTearDown", () => {
+    window.clearTimeout(selectionTimer);
+    syncPanel(true);
+  });
 }
 
 function getTargets() {
   if (!canvas?.ready) return [];
-  const layer = canvas.tokens;
   const canEdit = token => token.actor?.canUserModify(game.user, "update")
     && (getPool(token.actor, "hp") || getPool(token.actor, "mp"));
-
-  if (layer.controlled.length) return layer.controlled.filter(canEdit);
-  if (game.user.isGM) return [];
-  const candidates = layer.placeables.filter(token => token.isVisible && canEdit(token));
-  return candidates.length === 1 ? candidates : [];
+  return canvas.tokens.controlled.filter(canEdit);
 }
 
 function getPool(actor, resource) {

@@ -32,8 +32,8 @@
     "ResourcePanel": {
       "Title": "HP & MP Panel",
       "Show": {
-        "Name": "Open HP & MP Panel on Sign-In",
-        "Hint": "Open the Project FU resource panel when you sign in on this browser."
+        "Name": "Show HP & MP Panel on Token Selection",
+        "Hint": "Automatically show the Project FU resource panel when you select a token you can edit."
       },
       "Selected": "{count} tokens selected",
       "NoTokens": "Select a token to adjust its resources.",
