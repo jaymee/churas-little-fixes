@@ -3,7 +3,8 @@
     "SettingsSections": {
       "BrowserTab": "Browser Tab",
       "ChatPortraits": "Chat Portraits",
-      "Canvas": "Canvas and Tokens"
+      "Canvas": "Canvas and Tokens",
+      "MapPins": "Map Pins"
     },
     "HideScenePaddingBorder": {
       "Name": "Hide Scene Padding Border",
@@ -51,6 +52,47 @@
       "IncreaseMP": "Increase MP",
       "HPAmount": "HP adjustment amount",
       "MPAmount": "MP adjustment amount"
+    },
+    "MapPins": {
+      "Default": "Use Foundry's default",
+      "On": "On",
+      "Off": "Off",
+      "hideMapPinBackground": {
+        "Name": "Hide Map Pin Backgrounds",
+        "Hint": "Remove the built-in background behind map note icons."
+      },
+      "alwaysShowMapPinLabels": {
+        "Name": "Always Show Map Pin Labels",
+        "Hint": "Display the hover label on each map pin you can already see."
+      },
+      "mapPinFontFamily": {
+        "Name": "Map Pin Label Font Family",
+        "Hint": "Enter a font family available to your players. Leave blank to use each note's font."
+      },
+      "mapPinFontSize": {
+        "Name": "Map Pin Label Font Size (px)",
+        "Hint": "Set a world-wide label size. Use 0 to keep each note's size."
+      },
+      "mapPinTextColor": {
+        "Name": "Map Pin Label Text Color",
+        "Hint": "Leave blank to use each note's text color."
+      },
+      "mapPinTextShadow": {
+        "Name": "Map Pin Label Drop Shadow",
+        "Hint": "Use Foundry's default, add a drop shadow, or turn it off."
+      },
+      "mapPinShadowColor": {
+        "Name": "Map Pin Label Shadow Color",
+        "Hint": "Leave blank to use Foundry's usual shadow color."
+      },
+      "mapPinStrokeWidth": {
+        "Name": "Map Pin Label Stroke Width (px)",
+        "Hint": "Use -1 for Foundry's usual stroke, 0 to remove it, or a positive width for an outline."
+      },
+      "mapPinStrokeColor": {
+        "Name": "Map Pin Label Stroke Color",
+        "Hint": "Leave blank to use Foundry's usual stroke color."
+      }
     }
   }
 }

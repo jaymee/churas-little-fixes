@@ -1,7 +1,10 @@
+import { MAP_PIN_SETTINGS } from "./map-pins.mjs";
+
 const SECTIONS = [
   { label: "BrowserTab", keys: ["browserFavicon", "browserTitle"] },
   { label: "ChatPortraits", keys: ["topAlignChatPortraits", "compactChatPortraits"] },
   { label: "Canvas", keys: ["hideScenePaddingBorder", "statusIconHeightPercent", "minimumStatusIconSize"] },
+  { label: "MapPins", keys: MAP_PIN_SETTINGS },
 ];
 
 export function groupSettings(moduleId, html) {

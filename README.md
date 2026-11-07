@@ -22,6 +22,14 @@ Find these options under **Configure Settings → Module Settings → Chura's Li
 - **Status Icon Height (%)** sizes regular status icons as a percentage of each token's displayed artwork height. Try 4% to start, or use 0% for Foundry's default sizing.
 - **Minimum Status Icon Size (px)** keeps proportionally sized icons at or above 16 canvas pixels by default.
 
+### Map Pins
+
+- **Hide Map Pin Backgrounds** removes the built-in box behind note icons.
+- **Always Show Map Pin Labels** displays the normal hover label on pins the viewer can already see.
+- **Map Pin Label** settings override the font, size, text color, shadow, and stroke across the world. The defaults use each note's original style.
+
+To use your own pin image, open the note's configuration and choose **Entry Icon → Custom**, then pick an image in **Custom Icon**.
+
 ### HP & MP Panel
 
 **Currently requires the Project FU system.**
