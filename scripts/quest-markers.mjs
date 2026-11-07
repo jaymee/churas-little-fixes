@@ -6,18 +6,18 @@ export function isQuestMarker(note, moduleId) {
 }
 
 export function registerQuestMarkers(moduleId) {
-  const boundIcons = new WeakSet();
   let active;
+  let press;
   const localize = key => game.i18n.localize(`${TEXT}.${key}`);
 
   Hooks.on("renderNoteConfig", (app, html) => {
     if (game.user.isGM) addQuestCheckbox(app, html, moduleId, localize);
   });
-  Hooks.on("drawNote", bindClick);
-  Hooks.on("refreshNote", bindClick);
+  Hooks.on("refreshNote", note => {
+    if (note === active?.note && !canSeePin(note)) closePopup();
+  });
   Hooks.on("updateNote", document => {
     if (document === active?.note.document) closePopup();
-    if (document.object) bindClick(document.object);
   });
   Hooks.on("deleteNote", document => {
     if (document === active?.note.document) closePopup();
@@ -28,10 +28,31 @@ export function registerQuestMarkers(moduleId) {
     });
   }
   Hooks.on("canvasPan", positionPopup);
-  Hooks.on("canvasTearDown", closePopup);
+  Hooks.on("canvasTearDown", () => {
+    press = undefined;
+    closePopup();
+  });
 
+  // Observe the browser's canvas events before Foundry routes them through
+  // the active layer. A visible note may not receive its own PIXI events.
   document.addEventListener("pointerdown", event => {
     if (active && !active.element.contains(event.target)) closePopup();
+    if (!event.isPrimary || event.button !== 0) return;
+    const note = questPinAt(event);
+    press = note ? { note, id: event.pointerId, x: event.clientX, y: event.clientY } : undefined;
+  }, true);
+  document.addEventListener("pointerup", event => {
+    if (press?.id !== event.pointerId) return;
+    const { note, x, y } = press;
+    press = undefined;
+    if (Math.hypot(event.clientX - x, event.clientY - y) > 6 || note.mouseInteractionManager?.isDragging) return;
+    if (questPinAt(event) !== note) return;
+    const page = questPage(note);
+    if (page) openPopup(note, page);
+    else ui.notifications.warn(localize(game.user.isGM ? "MissingPage" : "Unavailable"));
+  }, true);
+  document.addEventListener("pointercancel", event => {
+    if (press?.id === event.pointerId) press = undefined;
   }, true);
   document.addEventListener("keydown", event => {
     if (!active || event.key !== "Escape") return;
@@ -43,31 +64,13 @@ export function registerQuestMarkers(moduleId) {
     if (isQuestMarker(note, moduleId) && questPage(note)) return false;
   });
 
-  function bindClick(note) {
-    if (note === active?.note && !canSeePin(note)) closePopup();
-    const icon = note.controlIcon;
-    if (!icon || boundIcons.has(icon) || !isQuestMarker(note, moduleId)) return;
-    boundIcons.add(icon);
-    let press;
-    icon.on("pointerdowncapture", event => {
-      if (event.button !== 0) return;
-      press = { id: event.pointerId, x: event.global.x, y: event.global.y };
-    });
-    icon.on("pointerupcapture", event => {
-      if (press?.id !== event.pointerId) return;
-      const moved = Math.hypot(event.global.x - press.x, event.global.y - press.y);
-      press = undefined;
-      if (moved > 6 || note.mouseInteractionManager?.isDragging) return;
-      if (!isQuestMarker(note, moduleId) || !canSeePin(note)) return;
-      const page = questPage(note);
-      if (page) openPopup(note, page);
-      else ui.notifications.warn(localize(game.user.isGM ? "MissingPage" : "Unavailable"));
-    });
-    const clearPress = event => {
-      if (press?.id === event.pointerId) press = undefined;
-    };
-    icon.on("pointerupoutside", clearPress);
-    icon.on("pointercancel", clearPress);
+  function questPinAt(event) {
+    if (!canvas?.ready || event.target !== canvas.app?.view) return;
+    const { x, y } = canvas.canvasCoordinatesFromClient({ x: event.clientX, y: event.clientY });
+    const note = canvas.notes?.placeables.findLast(pin =>
+      pin.controlIcon?.visible && canSeePin(pin) && pin.bounds.contains(x, y)
+    );
+    if (note && isQuestMarker(note, moduleId)) return note;
   }
 
   function openPopup(note, page) {
