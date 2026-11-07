@@ -1,5 +1,10 @@
 {
   "CHURAS_LITTLE_FIXES": {
+    "SettingsSections": {
+      "BrowserTab": "Browser Tab",
+      "ChatPortraits": "Chat Portraits",
+      "Canvas": "Canvas and Tokens"
+    },
     "HideScenePaddingBorder": {
       "Name": "Hide Scene Padding Border",
       "Hint": "Hide the black scene and canvas outlines for everyone in this world. Saving a change reloads connected clients."

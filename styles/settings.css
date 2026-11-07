@@ -1,0 +1,3 @@
+.churas-settings-section:not(:has(> .form-group:not([hidden]))) {
+  display: none;
+}

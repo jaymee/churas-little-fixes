@@ -1,4 +1,5 @@
 import { registerBrowserTab } from "./browser-tab.mjs";
+import { groupSettings } from "./settings-sections.mjs";
 import { registerStatusIconSizing } from "./status-icons.mjs";
 
 const MODULE_ID = "churas-little-fixes";
@@ -42,6 +43,7 @@ Hooks.once("init", () => {
   });
 
   Hooks.on("canvasReady", hideSceneOutline);
+  Hooks.on("renderSettingsConfig", (_app, html) => groupSettings(MODULE_ID, html));
 });
 
 function setChatPortraitAlignment(enabled) {
