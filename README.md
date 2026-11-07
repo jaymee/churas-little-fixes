@@ -24,7 +24,9 @@ Find these options under **Configure Settings → Module Settings → Chura's Li
 
 ### HP & MP Panel
 
-The panel opens when you select a Project FU token you can edit. Drag the token name to move it. HP has damage, healing, defeat, and full heal controls. MP has decrease and increase controls.
+**Currently requires the Project FU system.**
+
+The panel opens when you select a token you can edit. Drag the token name to move it. HP has damage, healing, defeat, and full heal controls. MP has decrease and increase controls.
 
 Use **Show HP & MP Panel on Token Selection** to control whether it opens in your browser. Inspired by [Always HP](https://foundryvtt.com/packages/always-hp).
 
