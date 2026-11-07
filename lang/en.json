@@ -13,6 +13,10 @@
       "Name": "Status Icon Height (%)",
       "Hint": "Set each status icon's height as a percentage of its displayed token artwork. Try 4% for a modest increase, or 0% for Foundry's default sizing."
     },
+    "MinimumStatusIconSize": {
+      "Name": "Minimum Status Icon Size (px)",
+      "Hint": "Set the smallest icon size in canvas pixels when percentage sizing is enabled. Set to 0 for proportional sizing without a minimum."
+    },
     "BrowserFavicon": {
       "Name": "Browser Favicon",
       "Hint": "Choose an image for the browser tab after signing in. Leave blank to use Foundry's usual icon."

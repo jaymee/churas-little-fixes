@@ -1,7 +1,7 @@
 const SECTIONS = [
   { label: "BrowserTab", keys: ["browserFavicon", "browserTitle"] },
   { label: "ChatPortraits", keys: ["topAlignChatPortraits", "compactChatPortraits"] },
-  { label: "Canvas", keys: ["hideScenePaddingBorder", "statusIconHeightPercent"] },
+  { label: "Canvas", keys: ["hideScenePaddingBorder", "statusIconHeightPercent", "minimumStatusIconSize"] },
 ];
 
 export function groupSettings(moduleId, html) {

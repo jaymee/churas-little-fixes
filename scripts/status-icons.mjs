@@ -1,4 +1,5 @@
 const ICON_HEIGHT = "statusIconHeightPercent";
+const MINIMUM_ICON_SIZE = "minimumStatusIconSize";
 
 export function registerStatusIconSizing(moduleId) {
   game.settings.register(moduleId, ICON_HEIGHT, {
@@ -9,21 +10,36 @@ export function registerStatusIconSizing(moduleId) {
     type: Number,
     range: { min: 0, max: 20, step: 0.5 },
     default: 0,
-    onChange: () => {
-      for (const token of canvas?.tokens?.placeables ?? []) {
-        token.renderFlags.set({ refreshEffects: true });
-      }
-    },
+    onChange: refreshStatusIcons,
+  });
+
+  game.settings.register(moduleId, MINIMUM_ICON_SIZE, {
+    name: "CHURAS_LITTLE_FIXES.MinimumStatusIconSize.Name",
+    hint: "CHURAS_LITTLE_FIXES.MinimumStatusIconSize.Hint",
+    scope: "world",
+    config: true,
+    type: Number,
+    range: { min: 0, max: 64, step: 1 },
+    default: 16,
+    onChange: refreshStatusIcons,
   });
 
   Hooks.on("refreshToken", (token, flags) => {
     if (!flags.refreshEffects && !flags.refreshSize && !flags.refreshMesh) return;
     const percent = game.settings.get(moduleId, ICON_HEIGHT);
-    if (percent > 0) resizeStatusIcons(token, percent);
+    if (percent <= 0) return;
+    const minimumSize = game.settings.get(moduleId, MINIMUM_ICON_SIZE);
+    resizeStatusIcons(token, percent, minimumSize);
   });
 }
 
-function resizeStatusIcons(token, percent) {
+function refreshStatusIcons() {
+  for (const token of canvas?.tokens?.placeables ?? []) {
+    token.renderFlags.set({ refreshEffects: true });
+  }
+}
+
+function resizeStatusIcons(token, percent, minimumSize) {
   const height = Math.abs(token.mesh?.height);
   if (!Number.isFinite(height) || height <= 0) return;
 
@@ -33,7 +49,7 @@ function resizeStatusIcons(token, percent) {
   const icons = effects.children.filter(child => child instanceof PIXI.Sprite && child !== effects.overlay);
   if (!icons.length) return;
 
-  const size = height * percent / 100;
+  const size = Math.max(minimumSize, height * percent / 100);
   const rows = Math.max(1, Math.floor(height / size));
   const inset = size / 20;
 
