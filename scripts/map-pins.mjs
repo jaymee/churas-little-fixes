@@ -1,3 +1,5 @@
+import { isQuestMarker, registerQuestMarkers } from "./quest-markers.mjs";
+
 const TEXT = "CHURAS_LITTLE_FIXES.MapPins";
 
 export const MAP_PIN_SETTINGS = [
@@ -27,6 +29,7 @@ export function registerMapPins(moduleId) {
   let appearance;
   const backgrounds = new WeakMap();
   const forcedLabels = new WeakSet();
+  const questLabels = new WeakMap();
   const styles = new WeakMap();
 
   for (const key of MAP_PIN_SETTINGS) {
@@ -42,6 +45,10 @@ export function registerMapPins(moduleId) {
 
   Hooks.on("drawNote", applyAppearance);
   Hooks.on("refreshNote", applyAppearance);
+  Hooks.on("updateNote", document => {
+    if (document.object) applyAppearance(document.object);
+  });
+  registerQuestMarkers(moduleId);
 
   function refreshPins() {
     appearance = undefined;
@@ -64,6 +71,16 @@ export function registerMapPins(moduleId) {
 
     const tooltip = note.tooltip;
     if (!tooltip) return;
+
+    if (isQuestMarker(note, moduleId)) {
+      if (!questLabels.has(tooltip)) questLabels.set(tooltip, tooltip.renderable);
+      tooltip.renderable = false;
+      return;
+    }
+    if (questLabels.has(tooltip)) {
+      tooltip.renderable = questLabels.get(tooltip);
+      questLabels.delete(tooltip);
+    }
 
     // Only expose the label on a pin Foundry already lets this client see.
     if (appearance.alwaysShow && note.visible && note.isVisible) {

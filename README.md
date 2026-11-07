@@ -30,6 +30,8 @@ Find these options under **Configure Settings → Module Settings → Chura's Li
 
 To use your own pin image, open the note's configuration and choose **Entry Icon → Custom**, then pick an image in **Custom Icon**.
 
+For a **Quest Marker**, link the pin to a short text journal page and enable **Quest Marker** in the note's configuration. One click opens the details on the map for players with Observer access to the page. Quest markers hide their map labels even when regular pin labels are always shown.
+
 ### HP & MP Panel
 
 **Currently requires the Project FU system.**
