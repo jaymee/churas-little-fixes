@@ -118,9 +118,11 @@
       "Title": "Canvas Effects",
       "Source": "WebM Effect",
       "Browse": "Browse for a WebM effect",
+      "Loop": "Loop Video",
       "Play": "Play",
       "Stop": "Stop Video",
       "Shake": "Shake Canvas",
+      "Intensity": "Shake Intensity (%)",
       "ChooseWebm": "Choose a .webm file to play.",
       "CannotPlay": "Could not load the WebM effect. Check that the file is accessible and has a playable duration.",
       "NoScene": "Open a scene you can edit to use Canvas Effects."

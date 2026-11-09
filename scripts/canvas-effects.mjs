@@ -26,15 +26,24 @@ export function registerCanvasEffects(moduleId) {
     videoKey = shakeKey = undefined;
   });
 
-  Hooks.on("getSceneControlButtons", controls => {
-    if (!game.user.isGM || !controls.tokens) return;
-    controls.tokens.tools.churasCanvasEffects = {
-      name: "churasCanvasEffects",
-      title: `${TEXT}.Title`,
-      icon: "fa-solid fa-film",
-      button: true,
-      onClick: () => panel.render({ force: true }),
-    };
+  Hooks.on("renderSceneControls", (_app, html) => {
+    if (!game.user.isGM) return;
+    const menu = html.querySelector("#scene-controls-controls")
+      ?? html.querySelector('[data-control="tokens"]')?.closest("menu, ol, ul");
+    if (!menu || menu.querySelector("[data-churas-canvas-effects]")) return;
+    const entry = document.createElement("li");
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "ui-control icon fa-solid fa-film";
+    button.dataset.churasCanvasEffects = "";
+    button.dataset.tooltip = localize("Title");
+    button.setAttribute("aria-label", localize("Title"));
+    button.addEventListener("click", () => {
+      if (panel.rendered) panel.bringToFront();
+      else panel.render({ force: true });
+    });
+    entry.append(button);
+    menu.append(entry);
   });
 
   const panel = createControls(moduleId, localize);
@@ -50,7 +59,9 @@ export function registerCanvasEffects(moduleId) {
       videoKey = nextVideo;
       const src = webmUrl(videoState?.src);
       const remaining = timeRemaining(videoState);
-      if (src && remaining > 0) playVideo(board, src, videoState, remaining);
+      const canLoop = videoState?.loop === true && Number.isFinite(videoState.startedAt)
+        && Number.isFinite(videoState.duration) && videoState.duration > 0;
+      if (src && (remaining > 0 || canLoop)) playVideo(board, src, videoState, remaining);
     }
 
     const shakeState = scene.getFlag(moduleId, SHAKE_FLAG);
@@ -71,19 +82,22 @@ export function registerCanvasEffects(moduleId) {
     element.style.zIndex = window.getComputedStyle(board).zIndex;
     element.setAttribute("aria-hidden", "true");
     element.hidden = true;
+    element.loop = state.loop === true;
 
     const finish = () => {
       if (video === element) stopVideo();
     };
-    element.addEventListener("ended", finish, { once: true });
+    if (!element.loop) element.addEventListener("ended", finish, { once: true });
     element.addEventListener("error", finish, { once: true });
     element.addEventListener("playing", () => { element.hidden = false; }, { once: true });
     element.addEventListener("loadedmetadata", () => {
       if (video !== element) return;
       videoStart = window.setTimeout(async () => {
-        if (video !== element || timeRemaining(state) <= 0) return;
+        if (video !== element || (!element.loop && timeRemaining(state) <= 0)) return;
         try {
-          element.currentTime = Math.max(0, now() - state.startedAt) / 1000;
+          const elapsed = Math.max(0, now() - state.startedAt);
+          const offset = element.loop ? elapsed % state.duration : elapsed;
+          element.currentTime = offset / 1000;
           await element.play();
         } catch {
           finish();
@@ -92,7 +106,7 @@ export function registerCanvasEffects(moduleId) {
     }, { once: true });
 
     board.after(element);
-    videoEnd = window.setTimeout(finish, remaining);
+    if (!element.loop) videoEnd = window.setTimeout(finish, remaining);
     element.preload = "auto";
     element.src = src;
   }
@@ -110,16 +124,10 @@ export function registerCanvasEffects(moduleId) {
   function startShake(board, state) {
     const elapsed = Math.max(0, now() - state.startedAt);
     if (elapsed >= state.duration) return;
-    shake = board.animate([
-      { translate: "0 0" },
-      { translate: "-8px 4px" },
-      { translate: "9px -5px" },
-      { translate: "-7px -3px" },
-      { translate: "6px 4px" },
-      { translate: "-4px -2px" },
-      { translate: "2px 1px" },
-      { translate: "0 0" },
-    ], { duration: state.duration });
+    const intensity = shakeIntensity(state.intensity) / 100;
+    const offsets = [[0, 0], [-8, 4], [9, -5], [-7, -3], [6, 4], [-4, -2], [2, 1], [0, 0]];
+    const frames = offsets.map(([x, y]) => ({ translate: `${x * intensity}px ${y * intensity}px` }));
+    shake = board.animate(frames, { duration: state.duration });
     shake.currentTime = elapsed;
   }
 
@@ -149,6 +157,13 @@ function createControls(moduleId, localize) {
     static PARTS = { content: { template: `modules/${moduleId}/templates/canvas-effects.hbs` } };
 
     #request = 0;
+    #intensity = 100;
+
+    async _prepareContext(options) {
+      const context = await super._prepareContext(options);
+      const video = canvas?.scene?.getFlag(moduleId, VIDEO_FLAG);
+      return { ...context, source: video?.src ?? "", loop: video?.loop === true, intensity: this.#intensity };
+    }
 
     static browse() {
       const field = this.element.querySelector("[data-effect-source]");
@@ -168,10 +183,11 @@ function createControls(moduleId, localize) {
       }
 
       const request = ++this.#request;
+      const loop = this.element.querySelector("[data-effect-loop]").checked;
       try {
         const duration = await readVideoDuration(url);
         if (this.#request !== request || canvas.scene !== scene || !canvas.ready) return;
-        await scene.setFlag(moduleId, VIDEO_FLAG, { src, startedAt: now() + START_DELAY, duration });
+        await scene.setFlag(moduleId, VIDEO_FLAG, { src, startedAt: now() + START_DELAY, duration, loop });
       } catch {
         if (this.#request === request) ui.notifications.error(localize("CannotPlay"));
       }
@@ -185,7 +201,13 @@ function createControls(moduleId, localize) {
 
     static async shake() {
       const scene = getEditableScene();
-      if (scene) await scene.setFlag(moduleId, SHAKE_FLAG, { startedAt: now() + START_DELAY, duration: SHAKE_DURATION });
+      if (!scene) return;
+      this.#intensity = shakeIntensity(this.element.querySelector("[data-shake-intensity]").valueAsNumber);
+      await scene.setFlag(moduleId, SHAKE_FLAG, {
+        startedAt: now() + START_DELAY,
+        duration: SHAKE_DURATION,
+        intensity: this.#intensity,
+      });
     }
   }
 
@@ -197,6 +219,10 @@ function createControls(moduleId, localize) {
   }
 
   return new CanvasEffectsControls();
+}
+
+function shakeIntensity(value) {
+  return Number.isFinite(value) ? Math.min(200, Math.max(10, value)) : 100;
 }
 
 function webmUrl(src) {
