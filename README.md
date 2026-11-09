@@ -21,6 +21,7 @@ Find these options under **Configure Settings → Module Settings → Chura's Li
 - **Hide Scene Padding Border** hides the black outlines around the scene and canvas. It is off by default. Saving a change reloads connected clients.
 - **Status Icon Height (%)** sizes regular status icons as a percentage of each token's displayed artwork height. Try 4% to start, or use 0% for Foundry's default sizing.
 - **Minimum Status Icon Size (px)** keeps proportionally sized icons at or above 16 canvas pixels by default.
+- **Canvas Effects** lets the GM play or stop a transparent WebM or trigger an earthquake shake for everyone viewing the scene. Open the film icon in the token toolbar, then browse for a WebM and click **Play**. Videos play muted behind Foundry's interface. The shake follows each player's reduced-motion preference. Inspired by [Canvas FX](https://foundryvtt.com/packages/canvas-fx).
 
 ### Map Pins
 

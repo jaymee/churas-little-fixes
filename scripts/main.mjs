@@ -1,4 +1,5 @@
 import { registerBrowserTab } from "./browser-tab.mjs";
+import { registerCanvasEffects } from "./canvas-effects.mjs";
 import { registerMapPins } from "./map-pins.mjs";
 import { registerResourcePanel } from "./resource-panel.mjs";
 import { groupSettings } from "./settings-sections.mjs";
@@ -11,6 +12,7 @@ const COMPACT_CHAT_PORTRAITS = "compactChatPortraits";
 
 Hooks.once("init", () => {
   registerBrowserTab(MODULE_ID);
+  registerCanvasEffects(MODULE_ID);
   registerMapPins(MODULE_ID);
   registerResourcePanel(MODULE_ID);
   registerStatusIconSizing(MODULE_ID);

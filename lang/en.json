@@ -113,6 +113,17 @@
       "Empty": "No quest details have been added.",
       "MissingPage": "Choose a Text journal page in this quest marker's Page field.",
       "Unavailable": "Quest details are unavailable."
+    },
+    "CanvasEffects": {
+      "Title": "Canvas Effects",
+      "Source": "WebM Effect",
+      "Browse": "Browse for a WebM effect",
+      "Play": "Play",
+      "Stop": "Stop Video",
+      "Shake": "Shake Canvas",
+      "ChooseWebm": "Choose a .webm file to play.",
+      "CannotPlay": "Could not load the WebM effect. Check that the file is accessible and has a playable duration.",
+      "NoScene": "Open a scene you can edit to use Canvas Effects."
     }
   }
 }
