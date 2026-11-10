@@ -114,6 +114,23 @@
       "MissingPage": "Choose a Text journal page in this quest marker's Page field.",
       "Unavailable": "Quest details are unavailable."
     },
+    "QuestRoutes": {
+      "Title": "Quest Marker Routes",
+      "Marker": "Quest Marker",
+      "Stops": "Route stops",
+      "Current": "Current",
+      "Next": "Next",
+      "Remove": "Remove stop at {x}, {y}",
+      "Add": "Add Stop",
+      "Cancel": "Cancel",
+      "Advance": "Advance",
+      "Restart": "Return to First",
+      "Picking": "Click a location on the map to save the stop. Press Escape to cancel.",
+      "NoStops": "Add stops in the order the marker should visit them.",
+      "NoMarkers": "Enable Quest Marker on a map note in this scene to create a route.",
+      "OutsideMap": "Choose a location inside the map.",
+      "SaveFailed": "Could not save the quest marker route."
+    },
     "CanvasEffects": {
       "Title": "Canvas Effects",
       "Source": "WebM Effect",

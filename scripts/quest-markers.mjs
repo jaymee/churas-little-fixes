@@ -3,7 +3,11 @@ export const QUEST_POPUP_FONT = "questPopupFontFamily";
 const TEXT = "CHURAS_LITTLE_FIXES.QuestMarkers";
 
 export function isQuestMarker(note, moduleId) {
-  return note.document.getFlag(moduleId, QUEST_MARKER) === true;
+  return isQuestMarkerDocument(note.document, moduleId);
+}
+
+export function isQuestMarkerDocument(note, moduleId) {
+  return note.getFlag(moduleId, QUEST_MARKER) === true;
 }
 
 export function registerQuestMarkers(moduleId) {

@@ -1,0 +1,46 @@
+<div class="standard-form">
+  {{#if notes}}
+    <div class="form-group">
+      <label for="churas-quest-route-note">{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Marker"}}</label>
+      <div class="form-fields">
+        <select id="churas-quest-route-note" data-route-note>
+          {{#each notes}}
+            <option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+          {{/each}}
+        </select>
+      </div>
+    </div>
+    {{#if stops}}
+      <ol class="churas-quest-route-stops" aria-label="{{localize 'CHURAS_LITTLE_FIXES.QuestRoutes.Stops'}}">
+        {{#each stops}}
+          <li>
+            {{x}}, {{y}}
+            {{#if current}}<strong aria-current="step">{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Current"}}</strong>{{/if}}
+            {{#if next}}<strong>{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Next"}}</strong>{{/if}}
+            <button type="button" class="icon fa-solid fa-trash" data-action="remove" data-stop-index="{{index}}"
+              aria-label="{{localize 'CHURAS_LITTLE_FIXES.QuestRoutes.Remove' x=x y=y}}"
+              data-tooltip="{{localize 'CHURAS_LITTLE_FIXES.QuestRoutes.Remove' x=x y=y}}" {{#if ../picking}}disabled{{/if}}></button>
+          </li>
+        {{/each}}
+      </ol>
+    {{else}}
+      <p>{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.NoStops"}}</p>
+    {{/if}}
+    {{#if picking}}<p role="status">{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Picking"}}</p>{{/if}}
+    <div class="form-group">
+      <div class="form-fields">
+        <button type="button" data-action="pick">
+          {{#if picking}}{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Cancel"}}{{else}}{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Add"}}{{/if}}
+        </button>
+        <button type="button" data-action="advance" {{#unless canAdvance}}disabled{{/unless}} {{#if picking}}disabled{{/if}}>
+          {{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Advance"}}
+        </button>
+        <button type="button" data-action="restart" {{#unless canRestart}}disabled{{/unless}} {{#if picking}}disabled{{/if}}>
+          {{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Restart"}}
+        </button>
+      </div>
+    </div>
+  {{else}}
+    <p>{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.NoMarkers"}}</p>
+  {{/if}}
+</div>

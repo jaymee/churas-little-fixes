@@ -33,6 +33,8 @@ To use your own pin image, open the note's configuration and choose **Entry Icon
 
 For a **Quest Marker**, link the pin to a short text journal page and enable **Quest Marker** in the note's configuration. A journal entry with exactly one text page works too. One click opens the details on the map for players with Observer access to the page. Quest markers hide their map labels even when regular pin labels are always shown.
 
+For a moving city, use the city artwork as the quest marker's **Custom Icon**. The GM can open **Map Notes → Quest Marker Routes**, select the marker, and use **Add Stop** to save each location with a click on the map. **Advance** moves the marker to the next saved stop for everyone who can see it. **Return to First** takes it back to the first stop. The marker keeps its popup at each location.
+
 **Quest Popup Font Family** changes the font in quest popups across the world. Leave it blank for the default font.
 
 Use **Pin Glow** in a note's configuration to add a colored halo with adjustable size and intensity. It appears only to users who can see the pin and leaves scene lighting alone.

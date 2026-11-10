@@ -28,3 +28,24 @@
   white-space: pre-line;
   overflow-wrap: anywhere;
 }
+
+.churas-quest-route-stops {
+  max-height: 12rem;
+  overflow-y: auto;
+  margin-block: 0;
+}
+
+.churas-quest-route-stops li {
+  min-height: 2rem;
+  align-content: center;
+}
+
+.churas-quest-route-stops strong {
+  margin-inline-start: 0.5rem;
+}
+
+.churas-quest-route-stops button {
+  float: inline-end;
+  width: 1.75rem;
+  height: 1.75rem;
+}
