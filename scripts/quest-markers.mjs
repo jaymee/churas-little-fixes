@@ -3,11 +3,7 @@ export const QUEST_POPUP_FONT = "questPopupFontFamily";
 const TEXT = "CHURAS_LITTLE_FIXES.QuestMarkers";
 
 export function isQuestMarker(note, moduleId) {
-  return isQuestMarkerDocument(note.document, moduleId);
-}
-
-export function isQuestMarkerDocument(note, moduleId) {
-  return note.getFlag(moduleId, QUEST_MARKER) === true;
+  return note.document.getFlag(moduleId, QUEST_MARKER) === true;
 }
 
 export function registerQuestMarkers(moduleId) {
@@ -29,7 +25,7 @@ export function registerQuestMarkers(moduleId) {
     if (game.user.isGM) addQuestCheckbox(app, html, moduleId, localize);
   });
   Hooks.on("refreshNote", note => {
-    if (note === active?.note && !canSeePin(note)) closePopup();
+    if (note === active?.note) positionPopup();
   });
   Hooks.on("updateNote", document => {
     if (document === active?.note.document) closePopup();

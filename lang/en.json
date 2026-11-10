@@ -115,8 +115,8 @@
       "Unavailable": "Quest details are unavailable."
     },
     "QuestRoutes": {
-      "Title": "Quest Marker Routes",
-      "Marker": "Quest Marker",
+      "Title": "Map Note Routes",
+      "Marker": "Map Note",
       "Stops": "Route stops",
       "Current": "Current",
       "Next": "Next",
@@ -125,11 +125,14 @@
       "Cancel": "Cancel",
       "Advance": "Advance",
       "Restart": "Return to First",
+      "Loop": "Start Loop",
+      "Stop": "Stop",
+      "LoopNeedsDistance": "Choose at least two different locations to loop this route.",
       "Picking": "Click a location on the map to save the stop. Press Escape to cancel.",
       "NoStops": "Add stops in the order the marker should visit them.",
-      "NoMarkers": "Enable Quest Marker on a map note in this scene to create a route.",
+      "NoNotes": "Create a map note in this scene to set up a route.",
       "OutsideMap": "Choose a location inside the map.",
-      "SaveFailed": "Could not save the quest marker route."
+      "SaveFailed": "Could not save the map note route."
     },
     "CanvasEffects": {
       "Title": "Canvas Effects",

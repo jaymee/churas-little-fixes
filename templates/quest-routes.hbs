@@ -19,7 +19,8 @@
             {{#if next}}<strong>{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Next"}}</strong>{{/if}}
             <button type="button" class="icon fa-solid fa-trash" data-action="remove" data-stop-index="{{index}}"
               aria-label="{{localize 'CHURAS_LITTLE_FIXES.QuestRoutes.Remove' x=x y=y}}"
-              data-tooltip="{{localize 'CHURAS_LITTLE_FIXES.QuestRoutes.Remove' x=x y=y}}" {{#if ../picking}}disabled{{/if}}></button>
+              data-tooltip="{{localize 'CHURAS_LITTLE_FIXES.QuestRoutes.Remove' x=x y=y}}"
+              {{#if ../picking}}disabled{{/if}} {{#if ../traveling}}disabled{{/if}}></button>
           </li>
         {{/each}}
       </ol>
@@ -27,20 +28,31 @@
       <p>{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.NoStops"}}</p>
     {{/if}}
     {{#if picking}}<p role="status">{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Picking"}}</p>{{/if}}
-    <div class="form-group">
-      <div class="form-fields">
-        <button type="button" data-action="pick">
-          {{#if picking}}{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Cancel"}}{{else}}{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Add"}}{{/if}}
-        </button>
-        <button type="button" data-action="advance" {{#unless canAdvance}}disabled{{/unless}} {{#if picking}}disabled{{/if}}>
-          {{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Advance"}}
-        </button>
-        <button type="button" data-action="restart" {{#unless canRestart}}disabled{{/unless}} {{#if picking}}disabled{{/if}}>
-          {{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Restart"}}
-        </button>
+    {{#if traveling}}
+      <button type="button" data-action="stop">{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Stop"}}</button>
+    {{else}}
+      <div class="form-group">
+        <div class="form-fields">
+          <button type="button" data-action="pick">
+            {{#if picking}}{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Cancel"}}{{else}}{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Add"}}{{/if}}
+          </button>
+          <button type="button" data-action="restart" {{#unless canRestart}}disabled{{/unless}} {{#if picking}}disabled{{/if}}>
+            {{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Restart"}}
+          </button>
+        </div>
       </div>
-    </div>
+      <div class="form-group">
+        <div class="form-fields">
+          <button type="button" data-action="advance" {{#unless canAdvance}}disabled{{/unless}} {{#if picking}}disabled{{/if}}>
+            {{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Advance"}}
+          </button>
+          <button type="button" data-action="loop" {{#unless canLoop}}disabled{{/unless}} {{#if picking}}disabled{{/if}}>
+            {{localize "CHURAS_LITTLE_FIXES.QuestRoutes.Loop"}}
+          </button>
+        </div>
+      </div>
+    {{/if}}
   {{else}}
-    <p>{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.NoMarkers"}}</p>
+    <p>{{localize "CHURAS_LITTLE_FIXES.QuestRoutes.NoNotes"}}</p>
   {{/if}}
 </div>

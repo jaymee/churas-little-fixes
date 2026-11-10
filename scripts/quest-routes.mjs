@@ -1,4 +1,4 @@
-import { isQuestMarkerDocument } from "./quest-markers.mjs";
+import { createTravel, registerMapNoteTravel, TRAVEL_FLAG, travelPosition } from "./map-note-travel.mjs";
 
 const FLAG = "questRoute";
 const TEXT = "CHURAS_LITTLE_FIXES.QuestRoutes";
@@ -8,6 +8,7 @@ export function registerQuestRoutes(moduleId) {
   const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
   const localize = key => game.i18n.localize(`${TEXT}.${key}`);
   const flagPath = `flags.${moduleId}.${FLAG}`;
+  const travelPath = `flags.${moduleId}.${TRAVEL_FLAG}`;
 
   class QuestRoutes extends HandlebarsApplicationMixin(ApplicationV2) {
     static DEFAULT_OPTIONS = {
@@ -19,6 +20,8 @@ export function registerQuestRoutes(moduleId) {
         remove: QuestRoutes.remove,
         advance: QuestRoutes.advance,
         restart: QuestRoutes.restart,
+        loop: QuestRoutes.loop,
+        stop: QuestRoutes.stop,
       },
     };
 
@@ -35,7 +38,7 @@ export function registerQuestRoutes(moduleId) {
 
     get #notes() {
       if (!game.user.isGM || !canvas?.ready || !canvas.scene) return [];
-      return canvas.scene.notes.filter(note => isQuestMarkerDocument(note, moduleId));
+      return [...canvas.scene.notes.values()];
     }
 
     get #selectedNote() {
@@ -49,15 +52,20 @@ export function registerQuestRoutes(moduleId) {
       if (note?.id !== this.#noteId) this.#cancelPick();
       this.#noteId = note?.id;
       const { stops, current } = readRoute(note, moduleId);
+      const traveling = Boolean(travelPosition(note, moduleId));
+      if (traveling) this.#cancelPick();
       return {
         ...context,
         notes: notes.map(item => ({ id: item.id, label: item.label || item.id, selected: item === note })),
         stops: stops.map(({ x, y }, index) => ({
-          index, x, y, current: index === current && note.x === x && note.y === y, next: index === current + 1,
+          index, x, y, current: !traveling && index === current && note.x === x && note.y === y,
+          next: !traveling && index === current + 1,
         })),
         picking: Boolean(this.#picker),
         canAdvance: current + 1 < stops.length,
         canRestart: current > 0,
+        canLoop: stops.length > 1,
+        traveling,
       };
     }
 
@@ -95,7 +103,7 @@ export function registerQuestRoutes(moduleId) {
 
       const note = this.#selectedNote;
       const board = canvas?.app?.view;
-      if (!note || !board) return;
+      if (!note || !board || travelPosition(note, moduleId)) return;
       this.#picker = new AbortController();
       const options = { capture: true, signal: this.#picker.signal };
       let press;
@@ -114,7 +122,7 @@ export function registerQuestRoutes(moduleId) {
         event.stopPropagation();
         if (Math.hypot(event.clientX - x, event.clientY - y) > 6) return;
         this.#cancelPick();
-        if (this.#selectedNote !== note) return this.render();
+        if (this.#selectedNote !== note || travelPosition(note, moduleId)) return this.render();
         const point = canvas.canvasCoordinatesFromClient({ x: event.clientX, y: event.clientY });
         const stop = { x: Math.round(point.x), y: Math.round(point.y) };
         if (!canvas.dimensions?.rect?.contains(stop.x, stop.y)) {
@@ -138,7 +146,7 @@ export function registerQuestRoutes(moduleId) {
 
     static remove(_event, target) {
       const note = this.#selectedNote;
-      if (!note || this.#picker) return;
+      if (!note || this.#picker || travelPosition(note, moduleId)) return;
       const { stops, current } = readRoute(note, moduleId);
       const index = Number(target.dataset.stopIndex);
       if (!stops[index]) return;
@@ -154,13 +162,34 @@ export function registerQuestRoutes(moduleId) {
       return this.#move(true);
     }
 
+    static loop() {
+      const note = this.#selectedNote;
+      if (!note || this.#picker || travelPosition(note, moduleId)) return;
+      const { stops, current } = readRoute(note, moduleId);
+      if (stops.length < 2) return;
+      const travel = createTravel(note, stops, current, (current + 1) % stops.length, true);
+      if (!travel) return ui.notifications.warn(localize("LoopNeedsDistance"));
+      return this.#save(note, { stops, current }, { [travelPath]: travel });
+    }
+
+    static stop() {
+      const note = this.#selectedNote;
+      const position = travelPosition(note, moduleId);
+      if (!position) return;
+      const { stops } = readRoute(note, moduleId);
+      return this.#save(note, { stops, current: position.index }, {
+        x: Math.round(position.x), y: Math.round(position.y), [travelPath]: null,
+      });
+    }
+
     #move(restart) {
       const note = this.#selectedNote;
-      if (!note || this.#picker) return;
+      if (!note || this.#picker || travelPosition(note, moduleId)) return;
       const { stops, current } = readRoute(note, moduleId);
       const next = restart ? 0 : current + 1;
       if (!stops[next]) return;
-      return this.#save(note, { stops, current: next }, stops[next]);
+      const travel = restart ? null : createTravel(note, stops, current, next, false);
+      return this.#save(note, { stops, current: next }, { ...stops[next], [travelPath]: travel });
     }
 
     async #save(note, route, position = {}) {
@@ -170,7 +199,7 @@ export function registerQuestRoutes(moduleId) {
         // Keep the note position and route progress in the same document update.
         await note.update({ ...position, [flagPath]: route });
       } catch (error) {
-        console.error(`${moduleId} | Could not update quest route`, error);
+        console.error(`${moduleId} | Could not update map note route`, error);
         ui.notifications.error(localize("SaveFailed"));
       } finally {
         this.#saving = false;
@@ -180,6 +209,7 @@ export function registerQuestRoutes(moduleId) {
   }
 
   const panel = new QuestRoutes();
+  registerMapNoteTravel(moduleId, note => panel.refreshNotes(note));
   Hooks.on("getSceneControlButtons", controls => {
     if (!game.user.isGM) return;
     const notes = controls.notes ?? Object.values(controls).find(control => control.layer === "notes");
