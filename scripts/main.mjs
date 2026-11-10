@@ -2,7 +2,6 @@ import { registerBrowserTab } from "./browser-tab.mjs";
 import { registerCanvasEffects } from "./canvas-effects.mjs";
 import { registerMapPins } from "./map-pins.mjs";
 import { registerResourcePanel } from "./resource-panel.mjs";
-import { registerScreenOverlay } from "./screen-overlay.mjs";
 import { groupSettings } from "./settings-sections.mjs";
 import { registerStatusIconSizing } from "./status-icons.mjs";
 
@@ -16,7 +15,6 @@ Hooks.once("init", () => {
   registerCanvasEffects(MODULE_ID);
   registerMapPins(MODULE_ID);
   registerResourcePanel(MODULE_ID);
-  registerScreenOverlay(MODULE_ID);
   registerStatusIconSizing(MODULE_ID);
   game.settings.register(MODULE_ID, TOP_ALIGN_CHAT_PORTRAITS, {
     name: "CHURAS_LITTLE_FIXES.TopAlignChatPortraits.Name",

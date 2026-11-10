@@ -2,7 +2,7 @@
   "id": "churas-little-fixes",
   "title": "Chura's Little Fixes",
   "description": "Small quality-of-life fixes for Foundry Virtual Tabletop.",
-  "version": "0.1.30",
+  "version": "0.1.31",
   "compatibility": {
     "minimum": "13",
     "verified": "13",
@@ -21,8 +21,7 @@
     "styles/settings.css",
     "styles/resource-panel.css",
     "styles/quest-markers.css",
-    "styles/canvas-effects.css",
-    "styles/screen-overlay.css"
+    "styles/canvas-effects.css"
   ],
   "languages": [
     {

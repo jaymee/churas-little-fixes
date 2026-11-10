@@ -23,10 +23,6 @@ Find these options under **Configure Settings → Module Settings → Chura's Li
 - **Minimum Status Icon Size (px)** keeps proportionally sized icons at or above 16 canvas pixels by default.
 - **Canvas Effects** opens from the film icon in the main left toolbar. The GM can play or loop a transparent WebM behind Foundry's interface for everyone viewing the scene. Playback continues when the controls window closes. Use **Stop Video** to end it, or set **Shake Intensity (%)** and click **Shake Canvas** for an earthquake effect. Videos play muted, and the shake follows each player's reduced-motion preference. Inspired by [Canvas FX](https://foundryvtt.com/packages/canvas-fx).
 
-### Screen Overlay
-
-The GM can choose a default image, GIF, or muted looping WebM and set its width and position as percentages of the screen. Use **Assign Overlay Files** to choose a different file for each Foundry account. Blank assignments use the default. The overlay sits above the interface while clicks pass through it, and hides when each viewer collapses their sidebar.
-
 ### Map Pins
 
 - **Hide Map Pin Backgrounds** removes the built-in box behind note icons.
