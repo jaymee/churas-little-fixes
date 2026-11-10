@@ -37,7 +37,7 @@ For a moving city, use the city artwork as the map note's **Custom Icon**. The G
 
 **Quest Popup Font Family** changes the font in quest popups across the world. Leave it blank for the default font.
 
-Use **Pin Glow** in a note's configuration to add a colored halo with adjustable size and intensity. Choose **Pulse**, **Torch Flicker**, or **Revolving Glow** and adjust the animation's speed, intensity, and direction. The halo is visible to anyone who can see the pin, follows their reduced-motion preference, and leaves scene lighting alone.
+Use **Pin Glow** in a note's configuration to add a colored halo with adjustable size and intensity. Choose **Pulse**, **Torch Flicker**, **Revolving Glow**, or **Star Light** and adjust the animation's speed, intensity, and direction. The halo is visible to anyone who can see the pin, follows their reduced-motion preference, and leaves scene lighting alone.
 
 ### HP & MP Panel
 

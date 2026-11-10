@@ -110,7 +110,8 @@
         "none": "None",
         "pulse": "Pulse",
         "torch": "Torch Flicker",
-        "revolving": "Revolving Glow"
+        "revolving": "Revolving Glow",
+        "starlight": "Star Light"
       }
     },
     "QuestMarkers": {

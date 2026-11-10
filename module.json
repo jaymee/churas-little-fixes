@@ -2,7 +2,7 @@
   "id": "churas-little-fixes",
   "title": "Chura's Little Fixes",
   "description": "Small quality-of-life fixes for Foundry Virtual Tabletop.",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "compatibility": {
     "minimum": "13",
     "verified": "13",

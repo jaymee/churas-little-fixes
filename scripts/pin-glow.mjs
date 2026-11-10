@@ -5,15 +5,17 @@ const SIZE = { min: 100, max: 400, default: 220 };
 const INTENSITY = { min: 0, max: 100, default: 70 };
 const ANIMATION_SPEED = { min: 1, max: 10, default: 5 };
 const ANIMATION_INTENSITY = { min: 0, max: 10, default: 5 };
-const ANIMATIONS = ["none", "pulse", "torch", "revolving"];
+const ANIMATIONS = ["none", "pulse", "torch", "revolving", "starlight"];
 const TAU = Math.PI * 2;
 
 export function registerPinGlow(moduleId) {
   const glows = new WeakMap();
+  const starRays = new WeakMap();
   const animated = new Map();
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let ticker;
   let texture;
+  let starTexture;
 
   Hooks.on("renderNoteConfig", (app, html) => {
     if (game.user.isGM) addGlowFields(app, html, moduleId);
@@ -60,13 +62,24 @@ export function registerPinGlow(moduleId) {
     glow.visible = true;
     glow.tint = Number.parseInt(getColor(config.color).slice(1), 16);
     const animation = config.animation;
+    const type = animationType(animation?.type);
+    let rays = starRays.get(glow);
+    if (type === "starlight" && !rays) {
+      starTexture ??= createStarlightTexture();
+      rays = glow.addChild(new PIXI.Sprite(starTexture));
+      rays.anchor.set(0.5);
+      rays.eventMode = "none";
+      starRays.set(glow, rays);
+    }
+    if (rays) rays.tint = glow.tint;
     const state = {
       glow,
+      rays,
       x: icon.x + iconSize / 2,
       y: icon.y + iconSize / 2,
       size: iconSize * getPercent(config.size, SIZE) / 100,
       alpha: intensity / 100,
-      type: animationType(animation?.type),
+      type,
       speed: getPercent(animation?.speed, ANIMATION_SPEED),
       intensity: getPercent(animation?.intensity, ANIMATION_INTENSITY) / ANIMATION_INTENSITY.max,
       direction: animation?.reverse === true ? -1 : 1,
@@ -103,8 +116,9 @@ export function registerPinGlow(moduleId) {
 }
 
 function renderGlow(state, animate, seconds = performance.now() / 1000) {
-  const { glow, type, speed, direction, intensity } = state;
+  const { glow, rays, type, speed, direction, intensity } = state;
   let { x, y, size, alpha } = state;
+  if (rays) rays.visible = animate && type === "starlight";
   if (animate) {
     const phase = seconds * (0.25 + 0.125 * speed) * direction;
     const angle = TAU * phase;
@@ -123,11 +137,49 @@ function renderGlow(state, animate, seconds = performance.now() / 1000) {
       const radius = 0.2 * size * intensity;
       x += radius * Math.cos(angle);
       y += radius * Math.sin(angle);
+    } else if (type === "starlight") {
+      rays.rotation = angle * 0.35;
+      rays.alpha = intensity * (0.8 + 0.2 * Math.sin(angle * 1.4));
     }
   }
   glow.alpha = alpha;
   glow.position.set(x, y);
   glow.width = glow.height = size;
+}
+
+function createStarlightTexture() {
+  const image = document.createElement("canvas");
+  const size = 128;
+  image.width = image.height = size;
+  const context = image.getContext("2d");
+  const pixels = context.createImageData(size, size);
+  // Uneven beams fade toward their tips, like the rays of Foundry's Star Light.
+  const beams = [
+    [0.12, 0.98, 0.08], [0.63, 0.84, 0.12], [1.44, 0.94, 0.10],
+    [2.14, 0.87, 0.15], [2.76, 0.99, 0.08], [3.42, 0.86, 0.10],
+    [4.15, 0.97, 0.12], [4.89, 0.88, 0.08], [5.71, 0.99, 0.11],
+  ];
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const dx = (x + 0.5) * 2 / size - 1;
+      const dy = (y + 0.5) * 2 / size - 1;
+      const radius = Math.hypot(dx, dy);
+      if (radius >= 1) continue;
+      const angle = (Math.atan2(dy, dx) + TAU) % TAU;
+      let opacity = 0;
+      for (const [heading, reach, width] of beams) {
+        const delta = Math.abs(angle - heading);
+        const distance = Math.min(delta, TAU - delta) / width;
+        const falloff = Math.max(0, 1 - radius / reach);
+        opacity = Math.max(opacity, Math.exp(-(distance ** 2)) * Math.sqrt(falloff));
+      }
+      const index = (y * size + x) * 4;
+      pixels.data[index] = pixels.data[index + 1] = pixels.data[index + 2] = 255;
+      pixels.data[index + 3] = opacity * 255;
+    }
+  }
+  context.putImageData(pixels, 0, 0);
+  return PIXI.Texture.from(image);
 }
 
 function createGlowTexture() {
