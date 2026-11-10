@@ -3,9 +3,16 @@ const TEXT = "CHURAS_LITTLE_FIXES.PinGlow";
 const DEFAULT_COLOR = "#ffce70";
 const SIZE = { min: 100, max: 400, default: 220 };
 const INTENSITY = { min: 0, max: 100, default: 70 };
+const ANIMATION_SPEED = { min: 1, max: 10, default: 5 };
+const ANIMATION_INTENSITY = { min: 0, max: 10, default: 5 };
+const ANIMATIONS = ["none", "pulse", "torch", "revolving"];
+const TAU = Math.PI * 2;
 
 export function registerPinGlow(moduleId) {
   const glows = new WeakMap();
+  const animated = new Map();
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let ticker;
   let texture;
 
   Hooks.on("renderNoteConfig", (app, html) => {
@@ -15,6 +22,15 @@ export function registerPinGlow(moduleId) {
   Hooks.on("refreshNote", drawGlow);
   Hooks.on("updateNote", note => {
     if (note.object) drawGlow(note.object);
+  });
+  Hooks.on("deleteNote", stopAnimation);
+  Hooks.on("canvasTearDown", () => {
+    animated.clear();
+    updateTicker();
+  });
+  reducedMotion.addEventListener("change", () => {
+    updateTicker();
+    for (const state of animated.values()) renderGlow(state, !reducedMotion.matches);
   });
 
   function drawGlow(note) {
@@ -27,6 +43,7 @@ export function registerPinGlow(moduleId) {
     let glow = glows.get(note);
     if (!show) {
       if (glow && !glow.destroyed) glow.visible = false;
+      stopAnimation(note.document);
       return;
     }
 
@@ -42,10 +59,75 @@ export function registerPinGlow(moduleId) {
 
     glow.visible = true;
     glow.tint = Number.parseInt(getColor(config.color).slice(1), 16);
-    glow.alpha = intensity / 100;
-    glow.position.set(icon.x + iconSize / 2, icon.y + iconSize / 2);
-    glow.width = glow.height = iconSize * getPercent(config.size, SIZE) / 100;
+    const animation = config.animation;
+    const state = {
+      glow,
+      x: icon.x + iconSize / 2,
+      y: icon.y + iconSize / 2,
+      size: iconSize * getPercent(config.size, SIZE) / 100,
+      alpha: intensity / 100,
+      type: animationType(animation?.type),
+      speed: getPercent(animation?.speed, ANIMATION_SPEED),
+      intensity: getPercent(animation?.intensity, ANIMATION_INTENSITY) / ANIMATION_INTENSITY.max,
+      direction: animation?.reverse === true ? -1 : 1,
+    };
+    if (state.type !== "none" && state.intensity > 0) {
+      animated.set(note.document, state);
+      updateTicker();
+      renderGlow(state, !reducedMotion.matches);
+    } else {
+      stopAnimation(note.document);
+      renderGlow(state, false);
+    }
   }
+
+  function stopAnimation(document) {
+    if (animated.delete(document)) updateTicker();
+  }
+
+  function updateTicker() {
+    const next = animated.size && !reducedMotion.matches ? canvas?.app?.ticker : undefined;
+    if (next === ticker) return;
+    ticker?.remove(animate);
+    ticker = next;
+    ticker?.add(animate);
+  }
+
+  function animate() {
+    const seconds = performance.now() / 1000;
+    for (const [document, state] of animated) {
+      if (state.glow.destroyed || state.glow.parent !== document.object) stopAnimation(document);
+      else renderGlow(state, true, seconds);
+    }
+  }
+}
+
+function renderGlow(state, animate, seconds = performance.now() / 1000) {
+  const { glow, type, speed, direction, intensity } = state;
+  let { x, y, size, alpha } = state;
+  if (animate) {
+    const phase = seconds * (0.25 + 0.125 * speed) * direction;
+    const angle = TAU * phase;
+    if (type === "pulse") {
+      const cycle = phase - Math.floor(phase);
+      // The shorter rise and longer fade trade places when played in reverse.
+      const strength = Math.min(cycle / 0.3, (1 - cycle) / 0.7);
+      alpha *= 1 - 0.65 * intensity * (1 - strength);
+      size *= 1 + 0.2 * intensity * strength;
+    } else if (type === "torch") {
+      const flicker = 0.5 + 0.25 * Math.sin(angle) + 0.15 * Math.sin(1.7 * angle + 2)
+        + 0.1 * Math.sin(2.3 * angle + 4);
+      alpha *= 1 - 0.55 * intensity * flicker;
+      size *= 1 - 0.2 * intensity * flicker;
+    } else if (type === "revolving") {
+      const radius = 0.2 * size * intensity;
+      x += radius * Math.cos(angle);
+      y += radius * Math.sin(angle);
+    }
+  }
+  glow.alpha = alpha;
+  glow.position.set(x, y);
+  glow.width = glow.height = size;
 }
 
 function createGlowTexture() {
@@ -79,12 +161,26 @@ function addGlowFields(app, html, moduleId) {
     { key: "color", type: "color", value: getColor(config?.color) },
     { key: "size", type: "number", value: getPercent(config?.size, SIZE), min: SIZE.min, max: SIZE.max },
     { key: "intensity", type: "number", value: getPercent(config?.intensity, INTENSITY), min: INTENSITY.min, max: INTENSITY.max },
+    { key: "animation.type", choices: ANIMATIONS, value: animationType(config?.animation?.type) },
+    { key: "animation.speed", type: "number", value: getPercent(config?.animation?.speed, ANIMATION_SPEED),
+      min: ANIMATION_SPEED.min, max: ANIMATION_SPEED.max },
+    { key: "animation.intensity", type: "number", value: getPercent(config?.animation?.intensity, ANIMATION_INTENSITY),
+      min: ANIMATION_INTENSITY.min, max: ANIMATION_INTENSITY.max },
+    { key: "animation.reverse", type: "checkbox", checked: config?.animation?.reverse === true },
   ];
-  for (const { key, ...attributes } of fields) {
+  for (const { key, choices, ...attributes } of fields) {
     const row = document.createElement("div");
     row.className = "form-group";
-    const input = document.createElement("input");
-    Object.assign(input, attributes, { name: `${prefix}.${key}`, id: `${app.id}-pin-glow-${key}` });
+    const input = document.createElement(choices ? "select" : "input");
+    if (choices) {
+      for (const choice of choices) {
+        const option = document.createElement("option");
+        option.value = choice;
+        option.textContent = game.i18n.localize(`${TEXT}.animations.${choice}`);
+        input.append(option);
+      }
+    }
+    Object.assign(input, attributes, { name: `${prefix}.${key}`, id: `${app.id}-pin-glow-${key.replace(".", "-")}` });
     if (input.type === "number") input.dataset.dtype = "Number";
     const label = document.createElement("label");
     label.htmlFor = input.id;
@@ -96,6 +192,10 @@ function addGlowFields(app, html, moduleId) {
     section.append(row);
   }
   labelField.after(section);
+}
+
+function animationType(value) {
+  return ANIMATIONS.includes(value) ? value : "none";
 }
 
 function getColor(value) {

@@ -99,7 +99,19 @@
       "enabled": "Enable Glow",
       "color": "Glow Color",
       "size": "Glow Size (% of Icon Size)",
-      "intensity": "Glow Intensity (%)"
+      "intensity": "Glow Intensity (%)",
+      "animation": {
+        "type": "Animation Type",
+        "speed": "Animation Speed (1–10)",
+        "intensity": "Animation Intensity (0–10)",
+        "reverse": "Reverse Animation Direction"
+      },
+      "animations": {
+        "none": "None",
+        "pulse": "Pulse",
+        "torch": "Torch Flicker",
+        "revolving": "Revolving Glow"
+      }
     },
     "QuestMarkers": {
       "FontFamily": {
