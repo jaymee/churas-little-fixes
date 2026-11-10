@@ -102,16 +102,12 @@
       "intensity": "Glow Intensity (%)",
       "animation": {
         "type": "Animation Type",
-        "speed": "Animation Speed (1–10)",
-        "intensity": "Animation Intensity (0–10)",
-        "reverse": "Reverse Animation Direction"
+        "speed": "Animation Speed (1–10)"
       },
       "animations": {
         "none": "None",
         "pulse": "Pulse",
-        "torch": "Torch Flicker",
-        "revolving": "Revolving Glow",
-        "starlight": "Star Light"
+        "torch": "Torch Flicker"
       }
     },
     "QuestMarkers": {
