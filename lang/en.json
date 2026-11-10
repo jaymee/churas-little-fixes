@@ -4,6 +4,7 @@
       "BrowserTab": "Browser Tab",
       "ChatPortraits": "Chat Portraits",
       "Canvas": "Canvas and Tokens",
+      "ScreenOverlay": "Screen Overlay",
       "MapPins": "Map Pins"
     },
     "HideScenePaddingBorder": {
@@ -25,6 +26,24 @@
     "BrowserTitle": {
       "Name": "Browser Tab Title",
       "Hint": "Set the browser tab title after signing in. Leave blank to use Foundry's usual title."
+    },
+    "ScreenOverlay": {
+      "Source": {
+        "Name": "Overlay File",
+        "Hint": "Show an image, GIF, or muted looping WebM above the interface. It hides when each viewer collapses their sidebar. Leave blank to turn it off."
+      },
+      "Width": {
+        "Name": "Overlay Width (%)",
+        "Hint": "Set the width as a percentage of the screen. The overlay keeps its aspect ratio."
+      },
+      "X": {
+        "Name": "Horizontal Position (%)",
+        "Hint": "Set 0 for the left edge, 50 for the center, or 100 for the right edge."
+      },
+      "Y": {
+        "Name": "Vertical Position (%)",
+        "Hint": "Set 0 for the top edge, 50 for the center, or 100 for the bottom edge."
+      }
     },
     "TopAlignChatPortraits": {
       "Name": "Top-Align Chat Portraits",

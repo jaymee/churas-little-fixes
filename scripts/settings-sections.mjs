@@ -1,10 +1,12 @@
 import { MAP_PIN_SETTINGS } from "./map-pins.mjs";
 import { QUEST_POPUP_FONT } from "./quest-markers.mjs";
+import { SCREEN_OVERLAY_SETTINGS } from "./screen-overlay.mjs";
 
 const SECTIONS = [
   { label: "BrowserTab", keys: ["browserFavicon", "browserTitle"] },
   { label: "ChatPortraits", keys: ["topAlignChatPortraits", "compactChatPortraits"] },
   { label: "Canvas", keys: ["hideScenePaddingBorder", "statusIconHeightPercent", "minimumStatusIconSize"] },
+  { label: "ScreenOverlay", keys: SCREEN_OVERLAY_SETTINGS },
   { label: "MapPins", keys: [...MAP_PIN_SETTINGS, QUEST_POPUP_FONT] },
 ];
 
