@@ -30,7 +30,14 @@
     "ScreenOverlay": {
       "Source": {
         "Name": "Overlay File",
-        "Hint": "Show an image, GIF, or muted looping WebM above the interface. It hides when each viewer collapses their sidebar. Leave blank to turn it off."
+        "Hint": "Default image, GIF, or muted looping WebM for accounts without their own file. It hides when each viewer collapses their sidebar."
+      },
+      "Users": {
+        "Name": "Per-User Overlay Files",
+        "Label": "Assign Overlay Files",
+        "Hint": "Choose an overlay file for each Foundry account. Leave an account blank to use the world default.",
+        "Save": "Save Overlay Files",
+        "InvalidFile": "Choose a supported image or video file for {name}."
       },
       "Width": {
         "Name": "Overlay Width (%)",

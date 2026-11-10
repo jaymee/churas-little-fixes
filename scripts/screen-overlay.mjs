@@ -1,4 +1,6 @@
 const SOURCE = "screenOverlaySource";
+const USER_SOURCES = "screenOverlayUserSources";
+export const SCREEN_OVERLAY_USER_MENU = "screenOverlayUsers";
 const WIDTH = "screenOverlayWidth";
 const X = "screenOverlayX";
 const Y = "screenOverlayY";
@@ -26,6 +28,14 @@ export function registerScreenOverlay(moduleId) {
     default: "",
     onChange: updateSource,
   });
+  game.settings.register(moduleId, USER_SOURCES, {
+    scope: "world",
+    config: false,
+    type: Object,
+    default: {},
+    onChange: updateSource,
+  });
+  registerUserMenu(moduleId);
 
   for (const { key, label, min, default: initial } of DIMENSIONS) {
     game.settings.register(moduleId, key, {
@@ -42,7 +52,7 @@ export function registerScreenOverlay(moduleId) {
 
   Hooks.once("ready", () => {
     ready = true;
-    updateSource(game.settings.get(moduleId, SOURCE));
+    updateSource();
   });
   Hooks.on("collapseSidebar", (sidebar, collapsed) => {
     if (sidebar === ui.sidebar) updateVisibility(!collapsed);
@@ -51,14 +61,11 @@ export function registerScreenOverlay(moduleId) {
     if (sidebar === ui.sidebar) updateVisibility(sidebar.expanded);
   });
 
-  function updateSource(path) {
+  function updateSource() {
     if (!ready) return;
-    const url = path?.trim() && URL.parse(path.trim(), document.baseURI);
-    const extension = url && url.pathname.split(".").pop().toLowerCase();
-    const isVideo = extension && Object.hasOwn(CONST.VIDEO_FILE_EXTENSIONS, extension);
-    const isImage = extension && Object.hasOwn(CONST.IMAGE_FILE_EXTENSIONS, extension);
-    const supported = url && ["http:", "https:"].includes(url.protocol) && (isVideo || isImage);
-    if (supported && media?.src === url.href) return;
+    const assignments = game.settings.get(moduleId, USER_SOURCES);
+    const source = parseMedia(assignments[game.user.id]) ?? parseMedia(game.settings.get(moduleId, SOURCE));
+    if (source && media?.src === source.url.href) return;
 
     if (video) {
       video.pause();
@@ -68,7 +75,7 @@ export function registerScreenOverlay(moduleId) {
     }
     media?.remove();
     media = undefined;
-    if (!supported) {
+    if (!source) {
       layer?.remove();
       layer = undefined;
       return;
@@ -83,15 +90,15 @@ export function registerScreenOverlay(moduleId) {
       document.body.append(layer);
     }
 
-    media = document.createElement(isVideo ? "video" : "img");
-    if (isVideo) {
+    media = document.createElement(source.isVideo ? "video" : "img");
+    if (source.isVideo) {
       video = media;
       Object.assign(video, { muted: true, loop: true, playsInline: true, preload: "none" });
     } else {
       media.alt = "";
     }
     media.addEventListener("error", event => { event.currentTarget.hidden = true; }, { once: true });
-    media.src = url.href;
+    media.src = source.url.href;
     layer.append(media);
     updatePosition();
     updateVisibility(ui.sidebar?.expanded);
@@ -113,4 +120,80 @@ export function registerScreenOverlay(moduleId) {
     if (!expanded) video.pause();
     else if (video.paused) video.play().catch(() => {});
   }
+}
+
+function registerUserMenu(moduleId) {
+  const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+  const title = `${TEXT}.Users.Name`;
+  const icon = "fa-solid fa-images";
+
+  class ScreenOverlayUsers extends HandlebarsApplicationMixin(ApplicationV2) {
+    static DEFAULT_OPTIONS = {
+      id: "churas-screen-overlay-users",
+      tag: "form",
+      window: { title, icon, resizable: true },
+      position: { width: 520 },
+      form: { handler: ScreenOverlayUsers.save },
+    };
+
+    static PARTS = { content: { template: `modules/${moduleId}/templates/screen-overlay-users.hbs` } };
+
+    #original;
+
+    _canRender(options) {
+      if (!game.user.isGM) return false;
+      return super._canRender(options);
+    }
+
+    async _prepareContext(options) {
+      const context = await super._prepareContext(options);
+      const assignments = game.settings.get(moduleId, USER_SOURCES);
+      this.#original = new Map();
+      const users = game.users.map(user => {
+        const file = assignments[user.id] ?? "";
+        this.#original.set(user.id, file);
+        return { id: user.id, name: user.name, file };
+      });
+      return { ...context, users };
+    }
+
+    static async save(_event, _form, formData) {
+      if (!game.user.isGM) return;
+      const assignments = { ...game.settings.get(moduleId, USER_SOURCES) };
+      let changed = false;
+      for (const [id, original] of this.#original) {
+        const file = formData.object[id]?.trim();
+        if (file === undefined || file === original || !game.users.has(id)) continue;
+        if (file && !parseMedia(file)) {
+          const message = game.i18n.format(`${TEXT}.Users.InvalidFile`, { name: game.users.get(id).name });
+          ui.notifications.error(message);
+          return;
+        }
+        if (file) assignments[id] = file;
+        else delete assignments[id];
+        changed = true;
+      }
+      if (changed) await game.settings.set(moduleId, USER_SOURCES, assignments);
+      await this.close();
+    }
+  }
+
+  game.settings.registerMenu(moduleId, SCREEN_OVERLAY_USER_MENU, {
+    name: title,
+    label: `${TEXT}.Users.Label`,
+    hint: `${TEXT}.Users.Hint`,
+    icon,
+    type: ScreenOverlayUsers,
+    restricted: true,
+  });
+}
+
+function parseMedia(path) {
+  if (typeof path !== "string" || !path.trim()) return null;
+  const url = URL.parse(path.trim(), document.baseURI);
+  if (!url || !["http:", "https:"].includes(url.protocol)) return null;
+  const extension = url.pathname.split(".").pop().toLowerCase();
+  const isVideo = Object.hasOwn(CONST.VIDEO_FILE_EXTENSIONS, extension);
+  if (isVideo || Object.hasOwn(CONST.IMAGE_FILE_EXTENSIONS, extension)) return { url, isVideo };
+  return null;
 }

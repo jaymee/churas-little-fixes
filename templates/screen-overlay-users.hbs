@@ -1,0 +1,12 @@
+<div class="standard-form">
+  <p>{{localize "CHURAS_LITTLE_FIXES.ScreenOverlay.Users.Hint"}}</p>
+  {{#each users}}
+    <div class="form-group">
+      <label for="churas-overlay-{{id}}">{{name}}</label>
+      <div class="form-fields">
+        <file-picker id="churas-overlay-{{id}}" name="{{id}}" type="imagevideo" value="{{file}}"></file-picker>
+      </div>
+    </div>
+  {{/each}}
+  <button type="submit">{{localize "CHURAS_LITTLE_FIXES.ScreenOverlay.Users.Save"}}</button>
+</div>

@@ -25,7 +25,7 @@ Find these options under **Configure Settings → Module Settings → Chura's Li
 
 ### Screen Overlay
 
-The GM can choose an image, GIF, or muted looping WebM and set its width and position as percentages of the screen. The overlay sits above the interface while clicks pass through it. It hides when each viewer collapses their sidebar. Clear the file to turn it off.
+The GM can choose a default image, GIF, or muted looping WebM and set its width and position as percentages of the screen. Use **Assign Overlay Files** to choose a different file for each Foundry account. Blank assignments use the default. The overlay sits above the interface while clicks pass through it, and hides when each viewer collapses their sidebar.
 
 ### Map Pins
 
